@@ -9,11 +9,14 @@ import Register from "./Register"
 import { Login } from "./Login"
 import { useAppDispatch } from "@/store/hooks"
 import { login } from "@/store/actions/authAction"
+import { ROUTES_PATH } from "@/utils/constant"
+import { useRouter } from "next/navigation";
 
 
 export default function LoginPage() {
   const [loginData, setLoginData] = useState({ email: "", password: "" })
-  const dispatch=useAppDispatch();
+  const dispatch = useAppDispatch();
+  const router = useRouter();
 
   const [registerData, setRegisterData] = useState({
     id: "2",
@@ -35,44 +38,41 @@ export default function LoginPage() {
     },
     password: "",
     confirmPassword: "",
-    role:{
+    role: {
       id: "1",
       name: "employee",
-     
+
     }
   })
 
 
-  const handleLogin = async(e: React.FormEvent) => {
-    e.preventDefault()
-//    let form={
-    
-//   "email": "Noemy.Bogisich92@gmail.com",
-//   "password": "Bitcot@123"
-// }
-   let form={
-    
-  "email": "Madaline_Johnston99@hotmail.com",
-  "password": "Bitcot@123"
-}
-const formData = new FormData();
-formData.append('email', 'Madaline_Johnston99@hotmail.com');
-formData.append('password', 'Bitcot@123');
-
-      const res = await dispatch(login(formData));
-      debugger
-    // Mock login - in real app, authenticate with backend
-    if (loginData.email.includes("admin")) {
-        window.location.href = "/admin-dashboard"
-    } else {
-      window.location.href = "/employee-dashboard"
-    }
+  const handleLogin = async (log: { email: string; password: string }) => {debugger
+  if (!log.email || !log.password) {
+    alert("Please fill in both fields");
+    return;
   }
+
+  const body = {
+  email: log.email,
+  password: log.password,
+};
+
+const res = await dispatch(login(body));
+
+
+  if (log.email.includes("admin")) {
+    router.push(ROUTES_PATH.ADMIN_DASHBOARD);
+  } else {
+    router.push(ROUTES_PATH.EMPLOYEE_DASHBOARD);
+  }
+};
+
+
 
   const handleRegister = (e: React.FormEvent) => {
     e.preventDefault()
     // Mock registration - in real app, create user account
-    window.location.href = "/employee-dashboard"
+    router.push(ROUTES_PATH.EMPLOYEE_DASHBOARD);
   }
 
   return (
@@ -102,7 +102,7 @@ formData.append('password', 'Bitcot@123');
                 <Login
                   loginData={loginData}
                   setLoginData={setLoginData}
-                  handleLogin={handleLogin}
+                  handleLogin={(data) => handleLogin({ preventDefault: () => {}, ...data } as unknown as React.FormEvent)}
                 />
               </TabsContent>
 

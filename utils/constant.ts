@@ -3,7 +3,8 @@ export const PUBLIC_PATH = {
 };
 
 export const PRIVATE_PATH = {
-  HOME: "/home"
+  ADMIN_DASHBOARD: "/admin-dashboard",
+  EMPLOYEE_DASHBOARD: "/employee-dashboard",
 }
 
 export const ROUTES_PATH = {
