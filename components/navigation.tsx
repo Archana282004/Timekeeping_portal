@@ -14,10 +14,13 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
-import { Clock, Users, FileText, Settings, LogOut, Menu, Home, Calendar } from "lucide-react"
+import { Clock, Users, FileText, Settings, LogOut, Menu, Home, Calendar, Cookie } from "lucide-react"
 import Link from "next/link"
-import { usePathname } from "next/navigation"
+import { usePathname, useRouter } from "next/navigation"
 import { MobileBottomNav } from "./mobile-bottom-nav"
+import { useAppDispatch } from "@/store/hooks"
+import Cookies from "js-cookie";
+import { logout } from "@/store/actions/authAction"
 
 interface NavigationProps {
   userType: "employee" | "admin"
@@ -29,9 +32,9 @@ export function Navigation({ userType }: NavigationProps) {
 
   const employeeLinks = [
     { href: "/employee-dashboard", label: "Dashboard", icon: Home },
-    { 
-      href: "/employee-submit-timecard", 
-      label: "Submit Timecard", 
+    {
+      href: "/employee-submit-timecard",
+      label: "Submit Timecard",
       icon: Clock,
       // Add active patterns for related routes
       activePatterns: [
@@ -54,17 +57,20 @@ export function Navigation({ userType }: NavigationProps) {
 
   // Helper function to check if link is active
   const isLinkActive = (link: any) => {
-    
+
     if (link.activePatterns) {
       return link.activePatterns.some((pattern: string) => pathname.startsWith(pattern))
     }
     return pathname === link.href
   }
 
-  const handleLogout = () => {
-    // Mock logout
-    window.location.href = "/"
-  }
+  const refresh = Cookies.get("refresh_token");
+  const dispatch = useAppDispatch()
+  const router = useRouter();
+  const handleLogout = async () => { debugger
+    const response = await logout();
+    router.push("/login");
+  };
 
   return (
     <>
@@ -85,11 +91,10 @@ export function Navigation({ userType }: NavigationProps) {
                   <Link
                     key={link.href}
                     href={link.href}
-                    className={`flex items-center space-x-2 transition-colors px-3 py-2 rounded-md ${
-                      isActive 
-                        ? "text-blue-600 bg-blue-50 font-medium" 
+                    className={`flex items-center space-x-2 transition-colors px-3 py-2 rounded-md ${isActive
+                        ? "text-blue-600 bg-blue-50 font-medium"
                         : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
-                    }`}
+                      }`}
                   >
                     <link.icon className={`h-4 w-4 ${isActive ? "text-blue-600" : ""}`} />
                     <span>{link.label}</span>
@@ -141,11 +146,10 @@ export function Navigation({ userType }: NavigationProps) {
                           key={link.href}
                           href={link.href}
                           onClick={() => setIsOpen(false)}
-                          className={`flex items-center space-x-3 transition-colors p-2 rounded-lg ${
-                            isActive 
-                              ? "text-blue-600 bg-blue-50 font-medium" 
+                          className={`flex items-center space-x-3 transition-colors p-2 rounded-lg ${isActive
+                              ? "text-blue-600 bg-blue-50 font-medium"
                               : "text-gray-600 hover:text-gray-900 hover:bg-gray-100"
-                          }`}
+                            }`}
                         >
                           <link.icon className={`h-5 w-5 ${isActive ? "text-blue-600" : ""}`} />
                           <span>{link.label}</span>

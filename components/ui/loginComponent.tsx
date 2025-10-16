@@ -46,18 +46,14 @@ export default function LoginPage() {
   })
 
 
-  const handleLogin = async (log: { email: string; password: string }) => {debugger
+  const handleLogin = async (log: { email: string; password: string }) => {
   if (!log.email || !log.password) {
     alert("Please fill in both fields");
     return;
   }
 
-  const body = {
-  email: log.email,
-  password: log.password,
-};
 
-const res = await dispatch(login(body));
+const res = await dispatch(login(log));
 
 
   if (log.email.includes("admin")) {
@@ -102,7 +98,7 @@ const res = await dispatch(login(body));
                 <Login
                   loginData={loginData}
                   setLoginData={setLoginData}
-                  handleLogin={(data) => handleLogin({ preventDefault: () => {}, ...data } as unknown as React.FormEvent)}
+                  handleLogin={handleLogin}
                 />
               </TabsContent>
 

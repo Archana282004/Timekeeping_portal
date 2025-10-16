@@ -4,8 +4,9 @@ import { cookies } from "next/headers";
 
 const authInterceptor = async (config: InternalAxiosRequestConfig) => {
     const nextCookies = await cookies()
-    const token = nextCookies.get("token")?.value;
+    const token = nextCookies.get("access_token")?.value;
     const refresh_token = nextCookies.get("refresh_token")?.value;
+    // console.log("accesstoken", token)
     if (token) {
         if(config?.url === '/refresh') {
             config.headers['Authorization'] = `Bearer ${refresh_token}`;

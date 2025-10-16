@@ -67,3 +67,59 @@ export const get = async (url: string, params?:object) => {
     })
     return res
 }
+export const put = async (url: string, body: object) => {
+    const res: any  = await new Promise((resolve, reject) => {
+        API.put(url, body).then(async (res: any) => {
+            if(res.success) {
+                resolve(res);
+            } else if(res.status === 422 || res.status === 401) {
+                const reFRes = await refreshToken(store.dispatch);
+                if(reFRes) {
+                    const recallRes = await API.put(url, body);
+                    if(res.success) { 
+                        resolve(recallRes);
+                    } else {
+                            clientErrorHandler(res);
+                            reject(new Error(res.message));
+                    }
+                } else {
+                    clientErrorHandler(reFRes);
+                    reject(new Error('Token refresh failed'));
+                }
+            } else {
+                clientErrorHandler(res);
+                reject(new Error(res.message));
+            }
+        })
+        
+     })
+     return res
+};
+export const del = async (url: string, body: object) => {
+    const res: any  = await new Promise((resolve, reject) => {
+        API.del(url, body).then(async (res: any) => {
+            if(res.success) {
+                resolve(res);
+            } else if(res.status === 422 || res.status === 401) {
+                const reFRes = await refreshToken(store.dispatch);
+                if(reFRes) {
+                    const recallRes = await API.del(url, body);
+                    if(res.success) { 
+                        resolve(recallRes);
+                    } else {
+                            clientErrorHandler(res);
+                            reject(new Error(res.message));
+                    }
+                } else {
+                    clientErrorHandler(reFRes);
+                    reject(new Error('Token refresh failed'));
+                }
+            } else {
+                clientErrorHandler(res);
+                reject(new Error(res.message));
+            }
+        })
+        
+     })
+     return res
+};

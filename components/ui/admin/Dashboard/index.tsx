@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -16,6 +16,8 @@ import Filters from "./Filters"
 import RecentTimecards from "./RecentTimecards"
 import EmployeeManagement from "./EmployeeManagement"
 import QuickActions from "./QuickActions"
+import { useAppDispatch, useAppSelector } from "@/store/hooks"
+import { fetchUsers } from "@/store/actions/userAction"
 
 export default function AdminDashboard() {
   const [searchTerm, setSearchTerm] = useState("")
@@ -61,14 +63,14 @@ export default function AdminDashboard() {
       issues: ["Excessive overtime", "No second meal break"],
     },
   ]
+  const dispatch = useAppDispatch();
 
-  const employees = [
-    { id: "1", name: "John Doe", department: "Engineering", position: "Software Developer", status: "active" },
-    { id: "2", name: "Jane Smith", department: "Marketing", position: "Marketing Manager", status: "active" },
-    { id: "3", name: "Mike Johnson", department: "Sales", position: "Sales Representative", status: "active" },
-    { id: "4", name: "Sarah Wilson", department: "HR", position: "HR Specialist", status: "active" },
-    { id: "5", name: "Tom Brown", department: "Engineering", position: "Senior Developer", status: "active" },
-  ]
+  useEffect(()=>{
+    dispatch(fetchUsers({ page: 1, limit: 50 }));
+  },[])
+
+  const employees = useAppSelector((state) => state.user.userlist) || [];
+  console.log("Employees", employees)
 
   const filteredEmployees = employees.filter((emp) => {
     const matchesSearch =

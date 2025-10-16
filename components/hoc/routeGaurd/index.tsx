@@ -12,24 +12,24 @@ export const RouterGuard = ({ children }: { children: React.ReactNode }) => {
   const router = useRouter();
   const pathname = usePathname();
   const [authorized, setAuthorized] = useState(true);
-  // useEffect(() => {
-  //   authCheck(pathname);
-  // }, [token, user, pathname]);
+  useEffect(() => {
+    authCheck(pathname);
+  }, [token, user, pathname]);
 
-  // function authCheck(url: string) {
-  //   const isPublicPath = Object.values(PUBLIC_PATH).includes(url)
+  function authCheck(url: string) {
+    const isPublicPath = Object.values(PUBLIC_PATH).includes(url)
 
-  //   if (!token && !user && !isPublicPath) {
-  //     router.push(ROUTES_PATH.LOGIN);
-  //     return false;
-  //   }
-  //   if (token && isPublicPath) {
-  //     router.push(ROUTES_PATH.HOME);
-  //     return false;
-  //   }
+    if (!token && !user && !isPublicPath) {
+      router.push(ROUTES_PATH.LOGIN);
+      return false;
+    }
+    if (token && isPublicPath) {
+      router.push(ROUTES_PATH.LOGIN);
+      return false;
+    }
 
-  //   setAuthorized(true);
-  // }
+    setAuthorized(true);
+  }
 
   return authorized ? children : <></>;
 };

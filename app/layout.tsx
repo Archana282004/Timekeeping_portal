@@ -1,5 +1,5 @@
 import type React from "react"
-import type { Metadata } from "next"
+import type { Metadata, Viewport } from "next"
 import { Inter } from "next/font/google"
 import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
@@ -12,9 +12,18 @@ export const metadata: Metadata = {
   title: "Timekeeping Portal",
   description: "Employee timekeeping and admin management system",
   manifest: "/manifest.json",
+  generator: "v0.dev",
+  icons: {
+    icon: "/icon-192x192.png",
+    apple: "/icon-192x192.png",
+  },
+}
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
   themeColor: "#000000",
-  viewport: "width=device-width, initial-scale=1, maximum-scale=1",
-    generator: 'v0.dev'
 }
 
 export default function RootLayout({
@@ -23,18 +32,15 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <head>
-        <link rel="manifest" href="/manifest.json" />
-        <link rel="apple-touch-icon" href="/icon-192x192.png" />
-        <meta name="theme-color" content="#000000" />
-      </head>
-      <body className={inter.className}>
-        <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
-           <Layout>
-
-          {children}
-           </Layout>
+    <html lang="en" className={inter.className} suppressHydrationWarning>
+      <body>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <Layout>{children}</Layout>
           <Toaster />
         </ThemeProvider>
       </body>

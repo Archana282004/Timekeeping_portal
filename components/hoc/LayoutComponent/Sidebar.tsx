@@ -13,6 +13,8 @@ import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import LogoutConfirmDialog from "@/shared/common-dialog/LogoutDialogBox";
 import CancelConfirmDialog from "@/shared/common-dialog/CancelConfirmDialog";
 import { logout } from "@/store/actions/authAction";
+import { refreshToken } from "@/store/reducers/authReducer";
+import { cookies } from "next/headers";
 
 const Sidebar = ({ isActive, setIsActive }: any) => {
   const router = useRouter();
@@ -20,8 +22,9 @@ const Sidebar = ({ isActive, setIsActive }: any) => {
   const loginUser = useAppSelector((state) => state.auth.user);
   const [showLogoutDialog, setShowLogoutDialog] = useState(false);
 
+  const refresh = cookies.get('refresh_token')?.value;
   const handleLogout = async () => {
-    await dispatch(logout());
+    await dispatch(logout(refresh));
     setShowLogoutDialog(false);
     router.push("/login");
   };

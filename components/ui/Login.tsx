@@ -16,7 +16,7 @@ interface LoginProps {
 export const Login = ({ loginData, setLoginData, handleLogin }: LoginProps) => {
   const simpleValidator = useRef(new SimpleReactValidator());
   const [, forceUpdate] = useState<number>();
-const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {debugger
+const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
   e.preventDefault();
   simpleValidator.current.showMessages();
 
@@ -34,6 +34,7 @@ const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {debugger
 
   handleLogin(log); // pass only data, not event
 };
+
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">

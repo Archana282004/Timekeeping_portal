@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -17,6 +17,12 @@ import RecentActivityCard from "./RecentActivityCard"
 
 export default function Dashboard() {
   const [currentTime, setCurrentTime] = useState(new Date())
+
+  // Update currentTime every minute
+  useEffect(() => {
+    const timer = setInterval(() => setCurrentTime(new Date()), 60000)
+    return () => clearInterval(timer)
+  }, [])
 
   // Mock data
   const employee = {
@@ -48,7 +54,6 @@ export default function Dashboard() {
   }
 
   const recentActivity = [
-
     { date: "2024-01-15", hours: 8.0, status: "approved", overtime: 0 },
     { date: "2024-01-14", hours: 9.5, status: "approved", overtime: 1.5 },
     { date: "2024-01-13", hours: 8.0, status: "pending", overtime: 0 },
@@ -68,13 +73,13 @@ export default function Dashboard() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
           {/* Today's Status */}
-          <TodayStatusCard todayStatus={todayStatus} />
+          <TodayStatusCard todayStatus={todayStatus} currentTime={currentTime} />
 
           {/* Weekly Summary */}
           <WeeklySummaryCard weeklyHours={weeklyHours} />
 
           {/* Compliance Status */}
-         <ComplianceStatusCard />
+          <ComplianceStatusCard />
         </div>
 
         {/* Mobile Quick Clock In/Out - Only visible on mobile */}
@@ -82,6 +87,7 @@ export default function Dashboard() {
 
         {/* Quick Actions */}
         <QuickActions company={company} />
+
         {/* Recent Activity */}
         <RecentActivityCard recentActivity={recentActivity} />
       </div>

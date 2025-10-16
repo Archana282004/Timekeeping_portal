@@ -9,9 +9,7 @@ export default function EmployeeManagement() {
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
 
   const handleAddEmployee = (employeeData: any) => {
-    console.log("New employee data:", employeeData);
-    // Add your logic here to handle the new employee data
-    // For example, send to API, update state, etc.
+    console.log("New Employee data:", employeeData);
   };
 
   return (
