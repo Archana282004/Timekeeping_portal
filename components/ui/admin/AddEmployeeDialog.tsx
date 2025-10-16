@@ -8,6 +8,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog"
 import SimpleReactValidator from "simple-react-validator"
 import { useRef, useState, useEffect } from "react"
+import { addUser, editUser } from "@/store/actions/userAction"
+import { useAppDispatch, useAppSelector } from "@/store/hooks"
 
 interface Company {
   name: string
@@ -18,7 +20,6 @@ interface Company {
 }
 
 interface RegisterData {
-  id: string
   name: string
   email: string
   phone: string
@@ -83,7 +84,6 @@ const AddEmployeeDialog = ({
     if (isOpen) {
       if (mode === "edit" && initialEmployee) {
         setRegisterData({
-          id: initialEmployee.id ?? "",
           name: initialEmployee.name ?? "",
           email: initialEmployee.email ?? "",
           phone: initialEmployee.phone ?? "",
@@ -105,7 +105,6 @@ const AddEmployeeDialog = ({
         });
       } else {
         setRegisterData({
-          id: "",
           name: "",
           email: "",
           phone: "",
@@ -130,26 +129,52 @@ const AddEmployeeDialog = ({
     }
   }, [isOpen, mode, initialEmployee]);
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    simpleValidator.current.showMessages();
-    
-    const isValid = simpleValidator.current.allValid();
-    if (isValid) {
-      if (mode === "edit") {
-        onUpdateEmployee?.(registerData);
-      } else {
-        // Set default password before submitting
-        const employeeDataWithPassword = {
-          ...registerData,
-          password: "Bitcot@123"
-        };
-        onAddEmployee?.(employeeDataWithPassword);
-      }
-      onClose();
-    }
+  const dispatch = useAppDispatch();
+  
+const handleSubmit = (e: React.FormEvent) => {
+  e.preventDefault();
+  simpleValidator.current.showMessages();
+
+  const isValid = simpleValidator.current.allValid();
+
+  if (!isValid) {
     forceUpdate && forceUpdate(Date.now());
+    return;
+  }
+
+  // Prepare API body
+  const payload = {
+    name: registerData.name,
+    email: registerData.email,
+    phone: registerData.phone,
+    position: registerData.position,
+    department: registerData.department.toLowerCase(),
+    hireDate: registerData.hireDate,
+    status: registerData.status,
+    userStatus: registerData.userStatus,
+    weeklyHours: registerData.weeklyHours,
+    overtimeHours: registerData.overtimeHours,
+    company_name: registerData.company.name,
+    company_address: registerData.company.address,
+    company_phone: registerData.company.phone,
+    company_email: registerData.company.email,
+    company_office_hours: registerData.company.officeHours,
+    password: mode === "add" ? "Bitcot@123" : undefined,
+    role: "employee"
   };
+
+  if (mode === "edit") {
+    dispatch(editUser(payload,6));
+    onUpdateEmployee?.(payload);
+  } else {
+    dispatch(addUser(payload));
+    onAddEmployee?.(payload);
+  }
+
+  onClose();
+};
+
+
 
   const handleClose = () => {
     simpleValidator.current.hideMessages();
@@ -350,49 +375,67 @@ const AddEmployeeDialog = ({
                 />
                 <span className="text-red-500 text-sm">{simpleValidator.current.message("companyEmail", registerData.company.email, "required")}</span>
               </div>
+{/* Office Hours */}
+<div className="space-y-2">
+  <Label htmlFor="officeHours">Office Hours</Label>
 
-             <div className="space-y-2">
-                <Label htmlFor="status">office hours </Label>
+  <Select
+    value={registerData.company.officeHours}
+    onValueChange={(value) =>
+      setRegisterData({
+        ...registerData,
+        company: { ...registerData.company, officeHours: value },
+      })
+    }
+  >
+    <SelectTrigger className="h-10">
+      <SelectValue placeholder="Select office hours" />
+    </SelectTrigger>
+    <SelectContent>
+      <SelectItem value="Mon - Fri: 8:00 AM - 5:00 PM">Mon - Fri: 8:00 AM - 5:00 PM</SelectItem>
+      <SelectItem value="Mon - Fri: 8:30 AM - 5:30 PM">Mon - Fri: 8:30 AM - 5:30 PM</SelectItem>
+      <SelectItem value="Mon - Fri: 9:00 AM - 6:00 PM">Mon - Fri: 9:00 AM - 6:00 PM</SelectItem>
+      <SelectItem value="Mon - Fri: 9:30 AM - 6:30 PM">Mon - Fri: 9:30 AM - 6:30 PM</SelectItem>
+      <SelectItem value="Mon - Fri: 10:00 AM - 7:00 PM">Mon - Fri: 10:00 AM - 7:00 PM</SelectItem>
+      <SelectItem value="Mon - Fri: 10:30 AM - 7:30 PM">Mon - Fri: 10:30 AM - 7:30 PM</SelectItem>
+      <SelectItem value="Mon - Fri: 11:00 AM - 8:00 PM">Mon - Fri: 11:00 AM - 8:00 PM</SelectItem>
+      <SelectItem value="Mon - Fri: 11:30 AM - 8:30 PM">Mon - Fri: 11:30 AM - 8:30 PM</SelectItem>
+    </SelectContent>
+  </Select>
 
-                <Select
-                  value={registerData.status}
-                  onValueChange={(value) => setRegisterData({ ...registerData, status: value })}
-                >
-                  <SelectTrigger className="h-10">
-                    <SelectValue placeholder="Select status" />
-                  </SelectTrigger>
-                  <SelectContent>
-                  <SelectItem value="Mon - Fri: 8:00 AM - 5:00 PM">Mon - Fri: 8:00 AM - 5:00 PM</SelectItem>
-<SelectItem value="Mon - Fri: 8:30 AM - 5:30 PM">Mon - Fri: 8:30 AM - 5:30 PM</SelectItem>
-<SelectItem value="Mon - Fri: 9:00 AM - 6:00 PM">Mon - Fri: 9:00 AM - 6:00 PM</SelectItem>
-<SelectItem value="Mon - Fri: 9:30 AM - 6:30 PM">Mon - Fri: 9:30 AM - 6:30 PM</SelectItem>
-<SelectItem value="Mon - Fri: 10:00 AM - 7:00 PM">Mon - Fri: 10:00 AM - 7:00 PM</SelectItem>
-<SelectItem value="Mon - Fri: 10:30 AM - 7:30 PM">Mon - Fri: 10:30 AM - 7:30 PM</SelectItem>
-<SelectItem value="Mon - Fri: 11:00 AM - 8:00 PM">Mon - Fri: 11:00 AM - 8:00 PM</SelectItem>
-<SelectItem value="Mon - Fri: 11:30 AM - 8:30 PM">Mon - Fri: 11:30 AM - 8:30 PM</SelectItem>
+  <span className="text-red-500 text-sm">
+    {simpleValidator.current.message(
+      "officeHours",
+      registerData.company.officeHours,
+      "required"
+    )}
+  </span>
+</div>
 
-                  </SelectContent>
-                </Select>
-                <span className="text-red-500 text-sm">{simpleValidator.current.message("status", registerData.status, "required")}</span>
-              </div>
+{/* Status */}
+<div className="space-y-2">
+  <Label htmlFor="status">Status</Label>
 
-              <div className="space-y-2">
-                <Label htmlFor="status">Status</Label>
+  <Select
+    value={registerData.status}
+    onValueChange={(value) =>
+      setRegisterData({ ...registerData, status: value })
+    }
+  >
+    <SelectTrigger className="h-10">
+      <SelectValue placeholder="Select status" />
+    </SelectTrigger>
+    <SelectContent>
+      <SelectItem value="active">Active</SelectItem>
+      <SelectItem value="inactive">Inactive</SelectItem>
+    </SelectContent>
+  </Select>
 
-                <Select
-                  value={registerData.status}
-                  onValueChange={(value) => setRegisterData({ ...registerData, status: value })}
-                >
-                  <SelectTrigger className="h-10">
-                    <SelectValue placeholder="Select status" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="active">Active</SelectItem>
-                    <SelectItem value="inactive">Inactive</SelectItem>
-                  </SelectContent>
-                </Select>
-                <span className="text-red-500 text-sm">{simpleValidator.current.message("status", registerData.status, "required")}</span>
-              </div>
+  <span className="text-red-500 text-sm">
+    {simpleValidator.current.message("status", registerData.status, "required")}
+  </span>
+</div>
+
 
 
             

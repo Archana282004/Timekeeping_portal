@@ -1,59 +1,54 @@
-import { UserTablelist } from "@/types/usertype";
+// store/userSlice.ts
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
+export interface Company {
+  name: string;
+  address: string;
+  phone: string;
+  email: string;
+  officeHours: string;
+}
 
-export interface UserTable {
-  data: UserTablelist[];
-  pagination: {
-    total: number;
-    page: number;
-    limit: number;
-  };
+export interface User {
+  id: string;
+  name: string;
+  email: string;
+  phone: string;
+  position: string;
+  department: string;
+  hireDate: string;
+  status: "active" | "inactive" | "pending";
+  userStatus: "active" | "inactive";
+  weeklyHours: number;
+  overtimeHours: number;
+  company: Company;
+  password?: string;
 }
 
 interface UserState {
-  userlist: UserTable | null;
+  userlist: User[];
 }
 
 const initialState: UserState = {
-  userlist: null,
+  userlist: [],
 };
 
-export const UserSlice = createSlice({
+export const userSlice = createSlice({
   name: "user",
   initialState,
   reducers: {
-    UserList: (state, action: PayloadAction<UserTable>) => {
+    UserList: (state, action: PayloadAction<User[]>) => {
       state.userlist = action.payload;
     },
-
     addUserLocal: (state, action: PayloadAction<User>) => {
-      if (state.userlist?.data) {
-        state.userlist.data.unshift(action.payload);
-        state.userlist.pagination.total += 1;
-      }
+      state.userlist.push(action.payload);
     },
-
     editUserLocal: (state, action: PayloadAction<User>) => {
-      if (state.userlist?.data) {
-        state.userlist.data = state.userlist.data.map((user) =>
-          String(user.id) === String(action.payload.id)
-            ? { ...user, ...action.payload } // merge updated fields
-            : user
-        );
-      }
-    },
-
-    deleteUserLocal: (state, action: PayloadAction<string | number>) => {
-      if (state.userlist?.data) {
-        state.userlist.data = state.userlist.data.filter(
-          (user) => String(user.id) !== String(action.payload)
-        );
-        state.userlist.pagination.total -= 1;
-      }
+      const idx = state.userlist.findIndex(u => u.id === action.payload.id);
+      if (idx !== -1) state.userlist[idx] = action.payload;
     },
   },
 });
 
-export const { UserList, addUserLocal, editUserLocal, deleteUserLocal } = UserSlice.actions;
-export default UserSlice.reducer;
+export const { UserList, addUserLocal, editUserLocal } = userSlice.actions;
+export default userSlice.reducer;
