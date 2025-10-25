@@ -8,3 +8,5 @@ export const get = async (url: string, params?:object) => axios.get(url, { param
 export const put = async (url: string, body:object) => axios.put(url, body);
 
 export const del = async (url: string, body:object) => axios.delete(url, { data: body });
+
+export const patch = async (url: string, body:object) => axios.patch(url, body);

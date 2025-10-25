@@ -1,25 +1,19 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
-import { Badge } from "@/components/ui/badge"
-import { Alert, AlertDescription } from "@/components/ui/alert"
-import { Clock, AlertTriangle, CheckCircle, Plus, Minus, Zap, FileText } from "lucide-react"
 import { Navigation } from "@/components/navigation"
 import Link from "next/link"
-import TimeEntriesComponent from "./TimeEntriesCard"
+import TimeEntriesCard from "./TimeEntriesCard"
 import ComplianceCard from "./ComplianceCard"
 import TotalHoursCard from "./TotalHoursCard"
 import OvertimeCard from "./OvertimeCard"
 import ComplianceAlert from "./ComplianceAlert"
-import TimeEntriesCard from "./TimeEntriesCard"
+import { Zap, FileText } from "lucide-react"
+import { useAppDispatch, useAppSelector } from "@/store/hooks"
+import { fetchMyWeekTimecards, todayStatus } from "@/store/actions/userAction"
 
 interface TimeEntry {
-  id: string
   date: string
   startTime: string
   endTime: string
@@ -27,49 +21,58 @@ interface TimeEntry {
   notes: string
 }
 
-interface BreakPeriod {
-  id: string
-  startTime: string
-  endTime: string
-  duration: number
+export interface DailyEntry {
+  id: number
+  date: string // ISO date string (e.g., "2025-10-14T00:00:00.000Z")
+  startTime: string // e.g., "09:30"
+  endTime: string // e.g., "18:00"
+  breakMinutes: number
+  hours: number
+  notes: string
+  timecardId: number
+  createdAt: string
+  updatedAt: string
 }
 
+export interface Timecard {
+  id: number
+  userId: number
+  weekEnding: string
+  totalHours: number
+  regularHours: number
+  overtime: number
+  status: "pending" | "approved" | "rejected" // restricts to known values
+  submittedAt: string
+  issues: string[] // empty or list of issue messages
+  createdAt: string
+  updatedAt: string
+  dailyEntries: DailyEntry[]
+}
+export interface timecard {
+  timecard: Timecard;
+} 
+
 export default function TimecardPage() {
-  const [timeEntries, setTimeEntries] = useState<TimeEntry[]>([
-    {
-      id: "1",
-      date: new Date().toISOString().split("T")[0],
-      startTime: "09:00",
-      endTime: "17:30",
-      breakMinutes: 60,
-      notes: "",
-    },
+  const dispatch = useAppDispatch();
+  useEffect(()=>{
+    dispatch(todayStatus())
+  },[])
+  const timeEntries= useAppSelector((state) =>
+    state.user.todayStatus ? [state.user.todayStatus] : []
+  )
+    useEffect(() => {
+      dispatch(fetchMyWeekTimecards({ "weekEnding": "2025-10-19" }));
+    }, [dispatch])
+  
+    const weekEntries = useAppSelector(
+    (state: any) => state.user.getmyweektimecards
+  ) as timecard | null;
+  const [breaks, setBreaks] = useState([
+    { id: "1", startTime: "12:00", endTime: "13:00", duration: 60 },
   ])
 
-  const [breaks, setBreaks] = useState<BreakPeriod[]>([{ id: "1", startTime: "12:00", endTime: "13:00", duration: 60 }])
-
-  const addTimeEntry = () => {
-    const newEntry: TimeEntry = {
-      id: Date.now().toString(),
-      date: new Date().toISOString().split("T")[0],
-      startTime: "09:00",
-      endTime: "17:00",
-      breakMinutes: 30,
-      notes: "",
-    }
-    setTimeEntries([...timeEntries, newEntry])
-  }
-
-  const updateTimeEntry = (id: string, field: keyof TimeEntry, value: string | number) => {
-    setTimeEntries((entries) => entries.map((entry) => (entry.id === id ? { ...entry, [field]: value } : entry)))
-  }
-
-  const removeTimeEntry = (id: string) => {
-    setTimeEntries((entries) => entries.filter((entry) => entry.id !== id))
-  }
-
   const addBreak = () => {
-    const newBreak: BreakPeriod = {
+    const newBreak = {
       id: Date.now().toString(),
       startTime: "12:00",
       endTime: "12:30",
@@ -78,57 +81,58 @@ export default function TimecardPage() {
     setBreaks([...breaks, newBreak])
   }
 
-  const updateBreak = (id: string, field: keyof BreakPeriod, value: string | number) => {
+
+  const updateBreak = (id: string, field: keyof typeof breaks[0], value: string | number) => {
     setBreaks((breakPeriods) =>
-      breakPeriods.map((breakPeriod) => (breakPeriod.id === id ? { ...breakPeriod, [field]: value } : breakPeriod)),
+      breakPeriods.map((b) => (b.id === id ? { ...b, [field]: value } : b))
     )
   }
 
   const removeBreak = (id: string) => {
-    setBreaks((breakPeriods) => breakPeriods.filter((breakPeriod) => breakPeriod.id !== id))
+    setBreaks((breakPeriods) => breakPeriods.filter((b) => b.id !== id))
   }
 
+  // Hours calculation
   const calculateHours = (startTime: string, endTime: string, breakMinutes: number) => {
     const start = new Date(`2000-01-01T${startTime}:00`)
     const end = new Date(`2000-01-01T${endTime}:00`)
-    const diffMs = end.getTime() - start.getTime()
-    const diffHours = diffMs / (1000 * 60 * 60)
+    const diffHours = (end.getTime() - start.getTime()) / (1000 * 60 * 60)
     return Math.max(0, diffHours - breakMinutes / 60)
   }
 
-  const getTotalHours = () => {
-    return timeEntries.reduce((total, entry) => {
-      return total + calculateHours(entry.startTime, entry.endTime, entry.breakMinutes)
-    }, 0)
-  }
+  const getTotalHours = () =>(
+    weekEntries?.timecard?.totalHours || 0
+    )
 
-  const getOvertimeHours = () => {
-    const totalHours = getTotalHours()
-    return Math.max(0, totalHours - 40) // Weekly overtime
-  }
+  const getOvertimeHours = () => (
+    weekEntries?.timecard?.overtime || 0
+  )
 
   const getComplianceIssues = () => {
     const issues: string[] = []
 
     timeEntries.forEach((entry, index) => {
-      const dailyHours = calculateHours(entry.startTime, entry.endTime, entry.breakMinutes)
+      const dailyHours = calculateHours(entry[0]?.startTime, entry[0]?.endTime, entry[0]?.breakMinutes)
 
-      // Check daily overtime (8+ hours)
       if (dailyHours > 8) {
         issues.push(`Day ${index + 1}: ${dailyHours.toFixed(1)} hours exceeds 8-hour daily limit`)
       }
 
-      // Check break requirements
-      if (dailyHours > 5 && entry.breakMinutes < 30) {
-        issues.push(`Day ${index + 1}: Missing required 30-minute meal break for ${dailyHours.toFixed(1)}-hour shift`)
+      if (dailyHours > 5 && entry[0]?.breakMinutes < 30) {
+        issues.push(
+          `Day ${index + 1}: Missing required 30-minute meal break for ${dailyHours.toFixed(
+            1
+          )}-hour shift`
+        )
       }
 
-      if (dailyHours > 10 && entry.breakMinutes < 60) {
-        issues.push(`Day ${index + 1}: Missing second meal break for ${dailyHours.toFixed(1)}-hour shift`)
+      if (dailyHours > 10 && entry[0]?.breakMinutes < 60) {
+        issues.push(
+          `Day ${index + 1}: Missing second meal break for ${dailyHours.toFixed(1)}-hour shift`
+        )
       }
     })
 
-    // Check weekly overtime
     const totalHours = getTotalHours()
     if (totalHours > 40) {
       issues.push(`Weekly total: ${totalHours.toFixed(1)} hours exceeds 40-hour weekly limit`)
@@ -144,7 +148,6 @@ export default function TimecardPage() {
       return
     }
 
-    // Mock submission
     alert("Timecard submitted successfully!")
   }
 
@@ -157,26 +160,25 @@ export default function TimecardPage() {
       <Navigation userType="employee" />
 
       <div className="container mx-auto px-4 py-8 pb-24">
-        <div className="mb-8">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-2xl md:text-3xl font-bold text-gray-900">Submit Timecard</h1>
-              <p className="text-gray-600">Enter your working hours for the week</p>
-            </div>
-            <div className="flex space-x-2">
-              <Link href="/employee-timecard-quickview">
-                <Button variant="outline" size="sm">
-                  <Zap className="mr-2 h-4 w-4" />
-                  Quick
-                </Button>
-              </Link>
-              <Link href="/employee-timecard-standardview">
-                <Button variant="outline" size="sm">
-                  <FileText className="mr-2 h-4 w-4" />
-                  Standard
-                </Button>
-              </Link>
-            </div>
+        {/* Header */}
+        <div className="mb-8 flex items-center justify-between">
+          <div>
+            <h1 className="text-2xl md:text-3xl font-bold text-gray-900">Submit Timecard</h1>
+            <p className="text-gray-600">Enter your working hours for the week</p>
+          </div>
+          <div className="flex space-x-2">
+            <Link href="/employee-timecard-quickview">
+              <Button variant="outline" size="sm">
+                <Zap className="mr-2 h-4 w-4" />
+                Quick
+              </Button>
+            </Link>
+            <Link href="/employee-timecard-standardview">
+              <Button variant="outline" size="sm">
+                <FileText className="mr-2 h-4 w-4" />
+                Standard
+              </Button>
+            </Link>
           </div>
         </div>
 
@@ -189,11 +191,17 @@ export default function TimecardPage() {
 
         {/* Compliance Alerts */}
         <ComplianceAlert complianceIssues={complianceIssues} />
-        <TimeEntriesCard timeEntries={timeEntries} addTimeEntry={addTimeEntry} updateTimeEntry={updateTimeEntry} removeTimeEntry={removeTimeEntry} />
-        
+
+        {/* Time Entries */}
+        <TimeEntriesCard
+          timeEntries={timeEntries}
+          addTimeEntry={todayStatus}
+          updateTimeEntry={() => {}}
+          removeTimeEntry={() => {}}
+        />
 
         {/* Submit Button */}
-        <div className="flex justify-end space-x-4">
+        <div className="flex justify-end space-x-4 mt-8">
           <Button variant="outline">Save Draft</Button>
           <Button onClick={handleSubmit} disabled={complianceIssues.length > 0}>
             Submit Timecard

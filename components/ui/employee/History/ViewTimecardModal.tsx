@@ -106,7 +106,7 @@ export default function ViewTimecardModal({
                 <CardTitle className="text-sm font-medium text-gray-600">Total Hours</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">{timecard.totalHours}h</div>
+                <div className="text-2xl font-bold">{timecard.totalHours}</div>
               </CardContent>
             </Card>
             <Card>

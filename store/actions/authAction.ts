@@ -8,7 +8,7 @@ import { cookies } from "next/headers";
 
 
 export const refreshToken = (refresh: any) => async (dispatch: AppDispatch) => {
-  const res: any = await API.get("/api/auth/refresh-token");
+  const res = await API.get("/api/auth/refresh-token");
   const refreshh = {
     "refreshToken": refresh
   }
@@ -26,7 +26,7 @@ export const refreshToken = (refresh: any) => async (dispatch: AppDispatch) => {
   };
 };
 
-export const login = (formData: any) => async (dispatch: AppDispatch) => {
+export const login = (formData: any) => async (dispatch: AppDispatch) => { 
   try {
     const rawFormData = {
       email: formData.email,
@@ -56,7 +56,7 @@ export const login = (formData: any) => async (dispatch: AppDispatch) => {
 };
 
 
-export const logout = async () => { debugger
+export const logout = async () => { 
   try {
     let refreshToken: any = Cookies.get('refresh_token');
     const res = await API.post("/api/auth/logout", { refreshToken });
@@ -73,3 +73,5 @@ export const logout = async () => { debugger
     console.log(err);
   }
 };
+
+

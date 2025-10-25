@@ -7,13 +7,14 @@ import { Badge } from "@/components/ui/badge"
 import { Clock, Calendar, CheckCircle, Building, Phone, Mail, Coffee } from "lucide-react"
 import Link from "next/link"
 import { Navigation } from "@/components/navigation"
-import { MobileTimecard } from "../mobile-timecard"
 import TodayStatusCard from "./TodayStatusCard"
 import WeeklySummaryCard from "./WeeklySummaryCard"
 import ComplianceStatusCard from "./ComplianceStatusCard"
 import MobileQuickClockInOut from "./MobileQuickClockInOut"
 import QuickActions from "./QuickActions"
 import RecentActivityCard from "./RecentActivityCard"
+import { useAppDispatch, useAppSelector } from "@/store/hooks"
+import { fetchMyWeekTimecards, StatusCardData } from "@/store/actions/userAction"
 
 export default function Dashboard() {
   const [currentTime, setCurrentTime] = useState(new Date())
@@ -39,25 +40,36 @@ export default function Dashboard() {
     email: "hr@techcorp.com",
     officeHours: "Monday - Friday: 9:00 AM - 6:00 PM",
   }
-
+  const dispatch = useAppDispatch();
+  useEffect(()=>{
+    dispatch(StatusCardData());
+    dispatch(fetchMyWeekTimecards({"weekEnding": "2025-10-19"}))
+  }, [dispatch])
+  const week = useAppSelector((state)=> state.user.weekTimecards) ; 
   const weeklyHours = {
-    regular: 32.5,
-    overtime: 4.0,
-    total: 36.5,
+    regular: week?.timecard?.regularHours,
+    overtime: week?.timecard?.overtime,
+    total: week?.timecard?.totalHours,
   }
-
+  
+  const status = useAppSelector((state)=> state.user.statusCard); 
   const todayStatus = {
-    clockedIn: true,
-    startTime: "9:00 AM",
-    breaksTaken: 1,
-    hoursWorked: 6.5,
+    clockedIn: status.clockedIn,
+    startTime: status.startTime,
+    breaksTaken: status.breaksTaken,
+    hoursWorked: status.hoursWorked,
   }
 
-  const recentActivity = [
-    { date: "2024-01-15", hours: 8.0, status: "approved", overtime: 0 },
-    { date: "2024-01-14", hours: 9.5, status: "approved", overtime: 1.5 },
-    { date: "2024-01-13", hours: 8.0, status: "pending", overtime: 0 },
-  ]
+ const recentActivity = week?.timecard?.dailyEntries
+  ?.slice(0, 3)
+  ?.map((entry) => ({
+    date: entry.date.split("T")[0],
+    hours: entry.hours,
+    status: week.timecard.status,
+    overtime: week.timecard.overtime,
+  })) || [];
+
+
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -73,7 +85,7 @@ export default function Dashboard() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
           {/* Today's Status */}
-          <TodayStatusCard todayStatus={todayStatus} currentTime={currentTime} />
+          <TodayStatusCard todayStatus={todayStatus} />
 
           {/* Weekly Summary */}
           <WeeklySummaryCard weeklyHours={weeklyHours} />

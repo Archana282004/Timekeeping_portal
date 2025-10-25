@@ -1,36 +1,78 @@
-// store/userSlice.ts
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-export interface Company {
-  name: string;
-  address: string;
-  phone: string;
-  email: string;
-  officeHours: string;
+interface DailyEntry {
+  id: number;
+  date: string;
+  startTime: string;
+  endTime: string;
+  breakMinutes: number;
+  hours: number;
+  notes: string;
+  timecardId: number;
+  createdAt: string;
+  updatedAt: string;
 }
 
-export interface User {
+interface Timecard {
+  id: number;
+  userId: number;
+  weekEnding: string;
+  totalHours: number;
+  regularHours: number;
+  overtime: number;
+  status: string;
+  submittedAt: string;
+  createdAt: string;
+  updatedAt: string;
+  dailyEntries: DailyEntry[];
+}
+
+interface TodayStatus {
+  date: string;
+  startTime: string;
+  endTime: string;
+  breakMinutes: number;
+  notes: string;
+}
+
+interface WeekHistory {
+  totalTimecards: number;
+  totalHours: number;
+  overtimeHours: number;
+  approvalRate: number;
+}
+
+interface TodayStatusCard {
+  clockedIn: boolean;
+  startTime: string;
+  breaksTaken: number;
+  hoursWorked: number;
+}
+
+interface User {
   id: string;
   name: string;
   email: string;
   phone: string;
-  position: string;
   department: string;
-  hireDate: string;
-  status: "active" | "inactive" | "pending";
-  userStatus: "active" | "inactive";
-  weeklyHours: number;
-  overtimeHours: number;
-  company: Company;
-  password?: string;
+  position: string;
+  status: string;
 }
 
-interface UserState {
+interface EmployeeState {
   userlist: User[];
+  weekTimecards: Timecard[];
+  todayStatus: TodayStatus[];
+  historyPage: WeekHistory[];
+  statusCard: TodayStatusCard[];
 }
 
-const initialState: UserState = {
+const initialState: EmployeeState = {
   userlist: [],
+  weekTimecards: [],
+  todayStatus: [],
+  historyPage: [],
+  statusCard: [],
 };
 
 export const userSlice = createSlice({
@@ -40,15 +82,21 @@ export const userSlice = createSlice({
     UserList: (state, action: PayloadAction<User[]>) => {
       state.userlist = action.payload;
     },
-    addUserLocal: (state, action: PayloadAction<User>) => {
-      state.userlist.push(action.payload);
+    WeekTimecards: (state, action: PayloadAction<Timecard[]>) => {
+      state.weekTimecards = action.payload;
     },
-    editUserLocal: (state, action: PayloadAction<User>) => {
-      const idx = state.userlist.findIndex(u => u.id === action.payload.id);
-      if (idx !== -1) state.userlist[idx] = action.payload;
+    TodayStatus: (state, action: PayloadAction<TodayStatus[]>) => {
+      state.todayStatus = action.payload;
+    },
+    HistoryPage: (state, action: PayloadAction<WeekHistory[]>) => {
+      state.historyPage = action.payload;
+    },
+    TodaystatusCard: (state, action: PayloadAction<TodayStatusCard[]>) => {
+      state.statusCard = action.payload;
     },
   },
 });
 
-export const { UserList, addUserLocal, editUserLocal } = userSlice.actions;
+export const {UserList, WeekTimecards, TodayStatus, HistoryPage, TodaystatusCard } = userSlice.actions;
+
 export default userSlice.reducer;

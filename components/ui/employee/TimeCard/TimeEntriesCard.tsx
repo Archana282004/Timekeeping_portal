@@ -14,53 +14,11 @@ import {
   DialogFooter 
 } from "../../dialog"
 import { useState } from "react"
+import { addDailyEntry } from "@/store/actions/userAction"
+import { useAppDispatch } from "@/store/hooks"
 
 export default function TimeEntriesCard({ timeEntries, addTimeEntry, updateTimeEntry, removeTimeEntry }: { timeEntries: any[], addTimeEntry: () => void, updateTimeEntry: (id: string, field: string, value: string | number) => void, removeTimeEntry: (id: string) => void }) {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false)
-
-
-  // {
-  //   id: "1",
-  //   employee: "John Doe",
-  //   employeeId: "EMP001",
-  //   department: "Engineering",
-  //   weekEnding: "2024-01-15",
-  //   totalHours: 42.5,
-  //   regularHours: 40,
-  //   overtime: 2.5,
-  //   status: "pending",
-  //   issues: ["Missing meal break on Tuesday", "Late clock-in on Wednesday"],
-  //   dailyEntries: [
-  //     { date: "2024-01-08", startTime: "09:00", endTime: "17:30", breakMinutes: 30, hours: 8.0, notes: "" },
-  //     {
-  //       date: "2024-01-09",
-  //       startTime: "09:15",
-  //       endTime: "17:45",
-  //       breakMinutes: 30,
-  //       hours: 8.0,
-  //       notes: "Traffic delay",
-  //     },
-  //     {
-  //       date: "2024-01-10",
-  //       startTime: "09:00",
-  //       endTime: "18:00",
-  //       breakMinutes: 15,
-  //       hours: 8.75,
-  //       notes: "Project deadline",
-  //     },
-  //     { date: "2024-01-11", startTime: "09:00", endTime: "17:30", breakMinutes: 30, hours: 8.0, notes: "" },
-  //     {
-  //       date: "2024-01-12",
-  //       startTime: "09:00",
-  //       endTime: "19:00",
-  //       breakMinutes: 60,
-  //       hours: 9.0,
-  //       notes: "Client meeting",
-  //     },
-  //   ],
-  //   submittedAt: "2024-01-15T10:30:00Z",
-  // },
-
 
   const [newEntry, setNewEntry] = useState({
     date: '',
@@ -73,13 +31,13 @@ export default function TimeEntriesCard({ timeEntries, addTimeEntry, updateTimeE
   const calculateHours = (startTime: string, endTime: string, breakMinutes: number) => {
     const start = new Date(`1970-01-01T${startTime}`);
     const end = new Date(`1970-01-01T${endTime}`);
-    const breakTime = new Date(`1970-01-01T${breakMinutes}m`);
-    return (end.getTime() - start.getTime() - breakTime.getTime()) / (1000 * 60 * 60);
+    return (end.getTime() - start.getTime() - breakMinutes * 60 * 1000) / (1000 * 60 * 60);
   }
-
+  const dispatch = useAppDispatch();
   const handleAddEntry = () => {
     if (newEntry.date && newEntry.startTime && newEntry.endTime) {
       addTimeEntry()
+      dispatch(addDailyEntry(newEntry))
       setNewEntry({
         date: '',
         startTime: '',
@@ -89,31 +47,6 @@ export default function TimeEntriesCard({ timeEntries, addTimeEntry, updateTimeE
       })
       setIsAddModalOpen(false)
     }
-
-  //  for add new entry to timeEntries
-     //  id: "1",
-  //   employee: "John Doe",
-  //   employeeId: "EMP001",
-  //   department: "Engineering",
-  //   weekEnding: "2024-01-15",
-  //   totalHours: 42.5,
-  //   regularHours: 40,
-  //   overtime: 2.5,
-  //   status: "pending",
-  //   issues: ["Missing meal break on Tuesday", "Late clock-in on Wednesday"],
-  // dailyEntries: [
-  //   { 
-   //    id: "1",
-  //     date: "2024-01-08",
-  //     startTime: "09:00",
-  //     endTime: "17:30",
-  //     breakMinutes: 30,
-  //     hours: 8.0,
-  //     notes: ""
-  //   }
-  // ]
-  // submittedAt: "2024-01-15T10:30:00Z",
-
   }
 
   const handleCancel = () => {
@@ -144,7 +77,8 @@ export default function TimeEntriesCard({ timeEntries, addTimeEntry, updateTimeE
         </CardHeader>
         <CardContent className="space-y-6">
           {timeEntries.map((entry, index) => (
-            <div key={entry.id} className="border rounded-lg p-4 space-y-4">
+  <div key={entry.id ?? index} className="border rounded-lg p-4 space-y-4">
+
               <div className="flex items-center justify-between">
                 <h4 className="font-medium">Day {index + 1}</h4>
                 {timeEntries.length > 1 && (
@@ -165,7 +99,7 @@ export default function TimeEntriesCard({ timeEntries, addTimeEntry, updateTimeE
                   <Input
                     id={`date-${entry.id}`}
                     type="date"
-                    value={entry.date}
+                    value={entry.date ?? ""}
                     onChange={(e) => updateTimeEntry(entry.id, "date", e.target.value)}
                   />
                 </div>
@@ -175,7 +109,7 @@ export default function TimeEntriesCard({ timeEntries, addTimeEntry, updateTimeE
                   <Input
                     id={`start-${entry.id}`}
                     type="time"
-                    value={entry.startTime}
+                    value={entry.startTime ?? ""}
                     onChange={(e) => updateTimeEntry(entry.id, "startTime", e.target.value)}
                   />
                 </div>
@@ -185,7 +119,7 @@ export default function TimeEntriesCard({ timeEntries, addTimeEntry, updateTimeE
                   <Input
                     id={`end-${entry.id}`}
                     type="time"
-                    value={entry.endTime}
+                    value={entry.endTime ?? ""}
                     onChange={(e) => updateTimeEntry(entry.id, "endTime", e.target.value)}
                   />
                 </div>
@@ -196,7 +130,7 @@ export default function TimeEntriesCard({ timeEntries, addTimeEntry, updateTimeE
                     id={`break-${entry.id}`}
                     type="number"
                     min="0"
-                    value={entry.breakMinutes}
+                    value={entry.breakMinutes ?? 0}
                     onChange={(e) => updateTimeEntry(entry.id, "breakMinutes", Number.parseInt(e.target.value) || 0)}
                   />
                 </div>
@@ -207,7 +141,7 @@ export default function TimeEntriesCard({ timeEntries, addTimeEntry, updateTimeE
                 <Textarea
                   id={`notes-${entry.id}`}
                   placeholder="Add any notes about this day..."
-                  value={entry.notes}
+                  value={entry.notes ?? ""}
                   onChange={(e) => updateTimeEntry(entry.id, "notes", e.target.value)}
                 />
               </div>
@@ -215,10 +149,10 @@ export default function TimeEntriesCard({ timeEntries, addTimeEntry, updateTimeE
               <div className="flex items-center justify-between text-sm bg-gray-50 p-3 rounded">
                 <span>Daily Hours:</span>
                 <span className="font-medium">
-                  {calculateHours(entry.startTime, entry.endTime, entry.breakMinutes).toFixed(1)}h
-                  {calculateHours(entry.startTime, entry.endTime, entry.breakMinutes) > 8 && (
+                  {calculateHours(entry.startTime ?? "00:00", entry.endTime ?? "00:00", entry.breakMinutes ?? 0).toFixed(1)}h
+                  {calculateHours(entry.startTime ?? "00:00", entry.endTime ?? "00:00", entry.breakMinutes ?? 0) > 8 && (
                     <Badge variant="secondary" className="ml-2 bg-orange-100 text-orange-800">
-                      OT: {(calculateHours(entry.startTime, entry.endTime, entry.breakMinutes) - 8).toFixed(1)}h
+                      OT: {(calculateHours(entry.startTime ?? "00:00", entry.endTime ?? "00:00", entry.breakMinutes ?? 0) - 8).toFixed(1)}h
                     </Badge>
                   )}
                 </span>
@@ -295,7 +229,6 @@ export default function TimeEntriesCard({ timeEntries, addTimeEntry, updateTimeE
               />
             </div>
 
-            {/* Preview of calculated hours */}
             {newEntry.startTime && newEntry.endTime && (
               <div className="flex items-center justify-between text-sm bg-gray-50 p-3 rounded">
                 <span>Daily Hours:</span>

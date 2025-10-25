@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -14,6 +14,8 @@ import SummaryStats from "./SummaryStats"
 import FirstTimecard from "./FirstTimecard"
 import Filter from "./Filter"
 import TimecardHistoryList from "./TimecardHistoryList"
+import { useAppDispatch, useAppSelector } from "@/store/hooks"
+import { HistoryPageData } from "@/store/actions/userAction"
 
 interface TimecardHistory {
   id: string
@@ -380,8 +382,14 @@ export default function TimecardHistoryPage() {
     }
   }
 
-  const totalHoursAllTime = filteredHistory.reduce((sum, tc) => sum + tc.totalHours, 0)
-  const totalOvertimeAllTime = filteredHistory.reduce((sum, tc) => sum + tc.overtime, 0)
+  const dispatch = useAppDispatch();
+  useEffect(()=>{
+    dispatch(HistoryPageData())
+  },[dispatch])
+  const totalHoursAllTime = useAppSelector((state)=> state.user.historyPage.totalHours);
+  const totalOvertimeAllTime = useAppSelector((state)=> state.user.historyPage.overtimeHours);
+  const total = useAppSelector((state)=> state.user.historyPage.totalTimecards);
+  const approvalrate = useAppSelector((state)=> state.user.historyPage.approvalRate)
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -402,7 +410,7 @@ export default function TimecardHistoryPage() {
         </div>
 
         {/* Summary Stats */}
-        <SummaryStats filteredHistory={filteredHistory} totalHoursAllTime={totalHoursAllTime} totalOvertimeAllTime={totalOvertimeAllTime} />
+        <SummaryStats filteredHistory={total} totalHoursAllTime={totalHoursAllTime} totalOvertimeAllTime={totalOvertimeAllTime} approvalrate={approvalrate} />
 
         {/* Filters */}
         <Filter 

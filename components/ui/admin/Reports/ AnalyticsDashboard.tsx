@@ -2,7 +2,7 @@ import { Bar, BarChart, ResponsiveContainer, YAxis, Tooltip, XAxis, CartesianGri
 import { Card, CardContent, CardHeader, CardTitle } from "../../card";
 import { BarChart3 } from "lucide-react";
 
-export default function AnalyticsDashboard({weeklyHoursData}: {weeklyHoursData: any}) {
+export default function AnalyticsDashboard({weeklyHoursData}: {weeklyHoursData: any}) { 
   return   <Card>
   <CardHeader>
     <CardTitle className="flex items-center">

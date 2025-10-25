@@ -1,72 +1,81 @@
 "use client";
 import { AppDispatch } from "../store";
 import * as API from "../serverApiAction/clientApis";
-import * as userReducer from "../reducers/userReducer";
 import { forSuccess } from "@/utils/CommonService";
-import { addUserLocal, deleteUserLocal, editUserLocal, UserList } from "../reducers/userReducer";
+import {
+  UserList,
+  WeekTimecards,
+  TodayStatus,
+  HistoryPage,
+  TodaystatusCard,
+} from "../reducers/userReducer";
 
-export const fetchUsers = (pagination: any) => async (dispatch: AppDispatch) => { debugger
-    try {
-        const res: any = await API.get("/api/auth/getAllUsers", pagination);
-        if (res.success) {
-            dispatch(UserList(res.data.data.users));
-        }
-        return res.data;
-    } catch (err) {
-        console.log(err);
-    }
+export const fetchUser = (id: number | string) => async (dispatch: AppDispatch) => {
+  try {
+    const res = await API.get(`/api/auth/getUser/${id}`);
+    if (res.success) dispatch(UserList(res.data));
+    return res.data;
+  } catch (err) {
+    console.log(err);
+  }
 };
 
-export const addUser = (formData: any) => async (dispatch: AppDispatch) => {
-    try {
-        const res = await API.post("api/auth/signup", formData);
-        if (res.success) {
-            forSuccess("User created successfully.");
-        }
-        return res;
-    } catch (err) {
-        console.log(err);
-    }
+export const fetchMyWeekTimecards = (weekEnding: any) => async (dispatch: AppDispatch) => {
+  try {
+    const res = await API.get(`/api/timecards/getMyWeek?`, weekEnding);
+    if (res.success) dispatch(WeekTimecards(res.data.data));
+    return res.data;
+  } catch (err) {
+    console.log(err);
+  }
 };
 
-export const editUser = (formData: any, id: number | string) => async (dispatch: AppDispatch, getState: any) => {
-    try {
-        const res = await API.put(`/api/auth/updateUser/${id}`, formData);
-        console.log("Edit user API response:", res);
-        if (res.success) {
-            forSuccess("User updated successfully.");
-            const currentUser = getState().user.userlist?.data.find((u: any) => u.id === id);
-            if (currentUser) {
-                dispatch(editUserLocal({ ...currentUser, ...formData }));
-            }
-        }
-        return res;
-    } catch (err) {
-        console.log(err);
-    }
+export const todayStatus = () => async (dispatch: AppDispatch) => {
+  try {
+    const res = await API.get("/api/timecards/todayStatus");
+    if (res.success) dispatch(TodayStatus(res.data.data));
+    return res.data;
+  } catch (err) {
+    console.log(err);
+  }
 };
 
-export const deleteUser = (userId: number | string) => async (dispatch: AppDispatch) => {
-    try {
-        const res = await API.del("/api/auth/deleteUser", { deleteIds: [userId] });
-        if (res.success) {
-            forSuccess("User deleted successfully.");
-            dispatch(deleteUserLocal(userId));
-        }
-        return res;
-    } catch (err) {
-        console.log(err);
-    }
+export const HistoryPageData = () => async (dispatch: AppDispatch) => {
+  try {
+    const res = await API.get("/api/timecards/getMyTimecardsHistory");
+    if (res.success) dispatch(HistoryPage(res.data.data));
+    return res.data;
+  } catch (err) {
+    console.log(err);
+  }
 };
 
-export const FetchUser = (id: number | string) => async (dispatch: AppDispatch) => {
-    try {
-        const res: any = await API.get(`/api/auth/getUser/${id}`);
-        if (res.success) {
-            dispatch(UserList(res.data));
-        }
-        return res.data;
-    } catch (err) {
-        console.log(err);
-    }
+export const StatusCardData = () => async (dispatch: AppDispatch) => {
+  try {
+    const res = await API.get("/api/timecards/yesterdayStatus");
+    if (res.success) dispatch(TodaystatusCard(res.data.data));
+    return res.data;
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+export const updateUserPassword = (formData: any) => async () => {
+  try {
+    const res = await API.patch("/api/auth/update-password", formData);
+    if (res.success) forSuccess("Password updated successfully.");
+    return res;
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+export const addDailyEntry = (formData: any) => async () => {
+  try {
+    const res = await API.post("/api/timecards/addDailyEntry", formData);
+    if (res.success) forSuccess("Daily entry added successfully.");
+    return res;
+  } catch (err) {
+    console.log(err);
+  }
 };

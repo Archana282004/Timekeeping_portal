@@ -44,6 +44,7 @@ export function Navigation({ userType }: NavigationProps) {
       ]
     },
     { href: "/employee-history", label: "History", icon: Calendar },
+    { href: "/employee-updatepassword", label: "Password Update", icon: Cookie }
   ]
 
   const adminLinks = [
@@ -67,7 +68,7 @@ export function Navigation({ userType }: NavigationProps) {
   const refresh = Cookies.get("refresh_token");
   const dispatch = useAppDispatch()
   const router = useRouter();
-  const handleLogout = async () => { debugger
+  const handleLogout = async () => { 
     const response = await logout();
     router.push("/login");
   };

@@ -95,7 +95,7 @@ export const put = async (url: string, body: object) => {
      })
      return res
 };
-export const del = async (url: string, body: object) => {
+export const del = async (url: string) => {
     const res: any  = await new Promise((resolve, reject) => {
         API.del(url, body).then(async (res: any) => {
             if(res.success) {
@@ -104,6 +104,35 @@ export const del = async (url: string, body: object) => {
                 const reFRes = await refreshToken(store.dispatch);
                 if(reFRes) {
                     const recallRes = await API.del(url, body);
+                    if(res.success) { 
+                        resolve(recallRes);
+                    } else {
+                            clientErrorHandler(res);
+                            reject(new Error(res.message));
+                    }
+                } else {
+                    clientErrorHandler(reFRes);
+                    reject(new Error('Token refresh failed'));
+                }
+            } else {
+                clientErrorHandler(res);
+                reject(new Error(res.message));
+            }
+        })
+        
+     })
+     return res
+};
+
+export const patch = async (url: string, body: object) => {
+    const res: any  = await new Promise((resolve, reject) => {
+        API.patch(url, body).then(async (res: any) => {
+            if(res.success) {
+                resolve(res);
+            } else if(res.status === 422 || res.status === 401) {
+                const reFRes = await refreshToken(store.dispatch);
+                if(reFRes) {
+                    const recallRes = await API.patch(url, body);
                     if(res.success) { 
                         resolve(recallRes);
                     } else {

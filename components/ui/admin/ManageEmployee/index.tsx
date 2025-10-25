@@ -1,20 +1,27 @@
-"use client"
+"use client";
 
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/store/store";
-import { addUser, editUser, FetchUser } from "@/store/actions/userAction";
+import {
+  addUser,
+  adminEmployeeCard,
+  DeleteUser,
+  editUser,
+} from "@/store/actions/adminaction";
 import AddEmployeeDialog from "../AddEmployeeDialog";
 import EmployeeList from "./EmployeeList";
 import StatsOverview from "./StatsOverview";
 import Filters from "./Filters";
 import NoEmployees from "./NoEmployees";
 import { Button } from "@/components/ui/button";
-import { Plus, Download } from "lucide-react";
+import { Plus } from "lucide-react";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
 
 export default function EmployeeManagementPage() {
-  const dispatch = useDispatch<AppDispatch>();
-  const userlist = useSelector((state: RootState) => state.user.userlist);
+  const dispatch = useAppDispatch();
+  const userlist = useSelector((state: RootState) => state.admin.userlist);
+  const emp = useAppSelector((state) => state.admin.adminEmployeecardsData);
 
   const [searchTerm, setSearchTerm] = useState("");
   const [departmentFilter, setDepartmentFilter] = useState("all");
@@ -25,9 +32,11 @@ export default function EmployeeManagementPage() {
 
   const departments = ["Engineering", "Marketing", "Sales", "HR", "Finance", "Operations"];
 
-\
+  useEffect(() => {
+    dispatch(adminEmployeeCard());
+  }, [dispatch]);
 
-  const filteredEmployees = userlist.filter(emp => {
+  const filteredEmployees = userlist.filter((emp) => {
     const matchesSearch =
       emp.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       emp.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -40,7 +49,6 @@ export default function EmployeeManagementPage() {
   });
 
   const handleAddEmployee = async (employeeData: any) => {
-    // Transform form data for API
     const payload = {
       name: employeeData.name,
       email: employeeData.email,
@@ -52,11 +60,11 @@ export default function EmployeeManagementPage() {
       userStatus: employeeData.userStatus,
       weeklyHours: employeeData.weeklyHours,
       overtimeHours: employeeData.overtimeHours,
-      company_name: employeeData.company.name,
-      company_address: employeeData.company.address,
-      company_phone: employeeData.company.phone,
-      company_email: employeeData.company.email,
-      company_office_hours: employeeData.company.officeHours,
+      company_name: employeeData.company_name,
+      company_address: employeeData.company_address,
+      company_phone: employeeData.company_phone,
+      company_email: employeeData.company_email,
+      company_office_hours: employeeData.company_office_hours, // fixed typo
       password: employeeData.password || "Bitcot@123",
       role: "employee",
     };
@@ -64,29 +72,32 @@ export default function EmployeeManagementPage() {
     setIsAddDialogOpen(false);
   };
 
-  const handleEditEmployee = async (employee: any) => {
+  const handleEditEmployee = (employee: any) => {
     setSelectedEmployee(employee);
     setIsEditDialogOpen(true);
-    // Fetch fresh data from API for edit
-    await dispatch(FetchUser(employee.id));
+  };
+
+  const handleDeleteEmployee = async (employeeId:any) => {
+    await dispatch(DeleteUser(employeeId));
   };
 
   const handleUpdateEmployee = async (employeeData: any) => {
     const payload = {
       name: employeeData.name,
-      password: employeeData.password || "", // optional
+      password: employeeData.password,
       position: employeeData.position,
       department: employeeData.department,
       status: employeeData.status,
       userStatus: employeeData.userStatus,
       weeklyHours: employeeData.weeklyHours,
       overtimeHours: employeeData.overtimeHours,
-      company_name: employeeData.company.name,
-      company_address: employeeData.company.address,
-      company_phone: employeeData.company.phone,
-      company_email: employeeData.company.email,
-      company_office_hours: employeeData.company.officeHours,
+      company_name: employeeData.company_name,
+      company_address: employeeData.company_address,
+      company_phone: employeeData.company_phone,
+      company_email: employeeData.company_email,
+      company_office_hours: employeeData.company_office_hours,
     };
+
     await dispatch(editUser(payload, employeeData.id));
     setIsEditDialogOpen(false);
     setSelectedEmployee(null);
@@ -103,8 +114,8 @@ export default function EmployeeManagementPage() {
           </Button>
         </div>
 
-        <StatsOverview employees={filteredEmployees} departments={departments} />
-        <Filters 
+        <StatsOverview employees={emp} departments={departments} />
+        <Filters
           searchTerm={searchTerm}
           setSearchTerm={setSearchTerm}
           departments={departments}
@@ -113,10 +124,15 @@ export default function EmployeeManagementPage() {
           statusFilter={statusFilter}
           setStatusFilter={setStatusFilter}
         />
-        <EmployeeList filteredEmployees={filteredEmployees} handleEditEmployee={handleEditEmployee} handleDeleteEmployee={() => {}} />
+
+        <EmployeeList
+          filteredEmployees={filteredEmployees}
+          handleEditEmployee={handleEditEmployee}
+          handleDeleteEmployee={handleDeleteEmployee}
+        />
+
         <NoEmployees filteredEmployees={filteredEmployees} />
 
-        {/* Add Employee Dialog */}
         <AddEmployeeDialog
           isOpen={isAddDialogOpen}
           onClose={() => setIsAddDialogOpen(false)}
@@ -125,7 +141,6 @@ export default function EmployeeManagementPage() {
           mode="add"
         />
 
-        {/* Edit Employee Dialog */}
         <AddEmployeeDialog
           isOpen={isEditDialogOpen}
           onClose={() => setIsEditDialogOpen(false)}

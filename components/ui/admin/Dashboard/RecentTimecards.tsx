@@ -2,7 +2,7 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "../..
 import { Badge } from "../../badge"
 
 
-export default function RecentTimecards({ recentTimecards }: { recentTimecards: any[] }) {
+export default function RecentTimecards({ recentTimecards }: { recentTimecards: any[] }) { 
   return (
     <Card>
     <CardHeader>
@@ -14,7 +14,7 @@ export default function RecentTimecards({ recentTimecards }: { recentTimecards: 
         {recentTimecards.slice(0, 3).map((timecard) => (
           <div key={timecard.id} className="flex items-center justify-between p-3 border rounded-lg">
             <div className="flex-1">
-              <p className="font-medium">{timecard.employee}</p>
+              <p className="font-medium">{timecard.user.name}</p>
               <p className="text-sm text-gray-600">
                 {timecard.totalHours}h total
                 {timecard.overtime > 0 && ` (${timecard.overtime}h OT)`}

@@ -2,7 +2,7 @@ import { Card, CardHeader, CardTitle, CardContent } from "../../card";
 import { PieChartIcon } from "lucide-react";
 import { ResponsiveContainer, PieChart, Pie, Cell, Tooltip } from "recharts";
 
-export default function DepartmentHoursDistribution({departmentHoursData}: {departmentHoursData: any}) {
+export default function DepartmentHoursDistribution({departmentHoursData}: {departmentHoursData: any}) { 
   return <Card>
   <CardHeader>
     <CardTitle className="flex items-center">
@@ -23,6 +23,7 @@ export default function DepartmentHoursDistribution({departmentHoursData}: {depa
           fill="#8884d8"
           dataKey="hours"
         >
+
           {departmentHoursData.map((entry, index) => (
             <Cell key={`cell-${index}`} fill={entry.color} />
           ))}

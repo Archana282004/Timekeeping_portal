@@ -1,7 +1,7 @@
 import { Card, CardHeader, CardTitle, CardContent } from "../../card"
 import { Calendar, Clock, AlertTriangle, CheckCircle } from "lucide-react"
 
-export default function SummaryStats({ filteredHistory, totalHoursAllTime, totalOvertimeAllTime }: { filteredHistory: any[], totalHoursAllTime: number, totalOvertimeAllTime: number }) {
+export default function SummaryStats({ filteredHistory, totalHoursAllTime, totalOvertimeAllTime, approvalrate }: { filteredHistory: any[], totalHoursAllTime: number, totalOvertimeAllTime: number , approvalrate: number}) {
   return (
     <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
     <Card>
@@ -10,7 +10,7 @@ export default function SummaryStats({ filteredHistory, totalHoursAllTime, total
         <Calendar className="h-4 w-4 text-muted-foreground" />
       </CardHeader>
       <CardContent>
-        <div className="text-2xl font-bold">{filteredHistory.length}</div>
+        <div className="text-2xl font-bold">{filteredHistory}</div>
         <p className="text-xs text-muted-foreground">Submitted</p>
       </CardContent>
     </Card>
@@ -21,7 +21,7 @@ export default function SummaryStats({ filteredHistory, totalHoursAllTime, total
         <Clock className="h-4 w-4 text-muted-foreground" />
       </CardHeader>
       <CardContent>
-        <div className="text-2xl font-bold">{totalHoursAllTime.toFixed(1)}h</div>
+        <div className="text-2xl font-bold">{totalHoursAllTime}h</div>
         <p className="text-xs text-muted-foreground">All time</p>
       </CardContent>
     </Card>
@@ -32,7 +32,7 @@ export default function SummaryStats({ filteredHistory, totalHoursAllTime, total
         <AlertTriangle className="h-4 w-4 text-orange-500" />
       </CardHeader>
       <CardContent>
-        <div className="text-2xl font-bold text-orange-600">{totalOvertimeAllTime.toFixed(1)}h</div>
+        <div className="text-2xl font-bold text-orange-600">{totalOvertimeAllTime}h</div>
         <p className="text-xs text-muted-foreground">Total overtime</p>
       </CardContent>
     </Card>
@@ -44,10 +44,7 @@ export default function SummaryStats({ filteredHistory, totalHoursAllTime, total
       </CardHeader>
       <CardContent>
         <div className="text-2xl font-bold text-green-600">
-          {(
-            (filteredHistory.filter((tc) => tc.status === "approved").length / filteredHistory.length) *
-            100
-          ).toFixed(0)}
+          {approvalrate}
           %
         </div>
         <p className="text-xs text-muted-foreground">Approved timecards</p>

@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import { useSelector } from "react-redux"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -9,6 +10,8 @@ import { Textarea } from "@/components/ui/textarea"
 import { Clock, CheckCircle, AlertTriangle, ArrowRight, Calendar } from "lucide-react"
 import { Navigation } from "@/components/navigation"
 import Link from "next/link"
+import { useAppDispatch, useAppSelector } from "@/store/hooks"
+import { fetchMyWeekTimecards } from "@/store/actions/userAction"
 
 interface DayEntry {
   date: string
@@ -21,35 +24,73 @@ interface DayEntry {
   notes: string
 }
 
+// TypeScript interfaces for Timecard and DailyEntry
+
+export interface DailyEntry {
+  id: number
+  date: string // ISO date string (e.g., "2025-10-14T00:00:00.000Z")
+  startTime: string // e.g., "09:30"
+  endTime: string // e.g., "18:00"
+  breakMinutes: number
+  hours: number
+  notes: string
+  timecardId: number
+  createdAt: string
+  updatedAt: string
+}
+
+export interface Timecard {
+  id: number
+  userId: number
+  weekEnding: string
+  totalHours: number
+  regularHours: number
+  overtime: number
+  status: "pending" | "approved" | "rejected" // restricts to known values
+  submittedAt: string
+  issues: string[] // empty or list of issue messages
+  createdAt: string
+  updatedAt: string
+  dailyEntries: DailyEntry[]
+}
+export interface timecard {
+  timecard: Timecard;
+} 
+
+
 export default function QuickTimecardPage() {
   const [currentWeek, setCurrentWeek] = useState<DayEntry[]>([])
   const [selectedDay, setSelectedDay] = useState<number>(0)
   const [weekNotes, setWeekNotes] = useState("")
   const [isSubmitting, setIsSubmitting] = useState(false)
-
-  // Initialize week data
+  const dispatch = useAppDispatch();
+ const today = new Date().toISOString().split("T")[0]
   useEffect(() => {
-    const today = new Date()
-    const startOfWeek = new Date(today.setDate(today.getDate() - today.getDay()))
+    dispatch(fetchMyWeekTimecards({ "weekEnding": "2025-10-19" }));
+  }, [dispatch])
 
-    const weekData: DayEntry[] = Array.from({ length: 7 }, (_, i) => {
-      const date = new Date(startOfWeek)
-      date.setDate(startOfWeek.getDate() + i)
+  const weekTimecards = useAppSelector(
+  (state: any) => state.user.getmyweektimecards
+) as timecard | null
 
-      return {
-        date: date.toISOString().split("T")[0],
-        clockIn: i < 5 ? "09:00" : "", // Weekdays default
-        clockOut: i < 5 ? "17:00" : "", // Weekdays default
-        breakMinutes: i < 5 ? 60 : 0,
-        isComplete: i < new Date().getDay(),
-        hours: i < 5 ? 7 : 0,
-        overtime: 0,
-        notes: "",
-      }
-    })
+useEffect(() => {
+  const dailyEntries = weekTimecards?.timecard?.dailyEntries
+  if (!dailyEntries?.length) return
 
-    setCurrentWeek(weekData)
-  }, [])
+  const weekData = dailyEntries.map((entry) => ({
+    date: entry.date,
+    clockIn: entry.startTime,
+    clockOut: entry.endTime,
+    breakMinutes: entry.breakMinutes,
+    isComplete: !!entry.startTime && !!entry.endTime,
+    hours: entry.hours,
+    overtime: Math.max(0, entry.hours - 8),
+    notes: entry.notes,
+  }))
+
+  setCurrentWeek(weekData)
+}, [weekTimecards])
+
 
   const calculateHours = (clockIn: string, clockOut: string, breakMinutes: number) => {
     if (!clockIn || !clockOut) return 0
@@ -64,7 +105,6 @@ export default function QuickTimecardPage() {
     const updatedWeek = [...currentWeek]
     updatedWeek[dayIndex] = { ...updatedWeek[dayIndex], [field]: value }
 
-    // Recalculate hours
     if (field === "clockIn" || field === "clockOut" || field === "breakMinutes") {
       const hours = calculateHours(
         updatedWeek[dayIndex].clockIn,
@@ -112,7 +152,6 @@ export default function QuickTimecardPage() {
   const handleQuickFill = () => {
     const updatedWeek = currentWeek.map((day, index) => {
       if (index >= 1 && index <= 5) {
-        // Monday to Friday
         return {
           ...day,
           clockIn: "09:00",
@@ -136,7 +175,6 @@ export default function QuickTimecardPage() {
     }
 
     setIsSubmitting(true)
-    // Mock submission delay
     await new Promise((resolve) => setTimeout(resolve, 2000))
     alert("Timecard submitted successfully!")
     setIsSubmitting(false)
@@ -245,9 +283,8 @@ export default function QuickTimecardPage() {
               {currentWeek.map((day, index) => (
                 <div
                   key={index}
-                  className={`p-4 border rounded-lg cursor-pointer transition-colors ${
-                    selectedDay === index ? "border-blue-500 bg-blue-50" : "hover:bg-gray-50"
-                  }`}
+                  className={`p-4 border rounded-lg cursor-pointer transition-colors ${selectedDay === index ? "border-blue-500 bg-blue-50" : "hover:bg-gray-50"
+                    }`}
                   onClick={() => setSelectedDay(index)}
                 >
                   <div className="flex items-center justify-between">

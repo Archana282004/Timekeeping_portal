@@ -36,6 +36,12 @@ export default function QuickActions({ company }: { company: any }) {
             View History
           </Button>
         </Link>
+         <Link href="/employee-updatepassword" className="block">
+          <Button variant="outline" className="w-full bg-transparent h-12 text-lg" size="lg">
+            <Calendar className="mr-2 h-5 w-5" />
+            Update Password
+          </Button>
+        </Link>
         <div className="grid grid-cols-2 gap-2 md:hidden">
           <Button variant="outline" className="h-10 bg-transparent">
             <Clock className="mr-1 h-4 w-4" />

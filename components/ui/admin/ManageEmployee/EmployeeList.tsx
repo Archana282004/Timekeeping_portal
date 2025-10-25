@@ -18,31 +18,32 @@ import {
 } from "../../alert-dialog"
 import { Pagination } from "../../../pagination"
 
-export default function EmployeeList({ filteredEmployees, handleEditEmployee, handleDeleteEmployee }: { filteredEmployees: any[], handleEditEmployee: (employee: any) => void, handleDeleteEmployee: (employeeId: string) => void }) {
-  // Pagination state
+export default function EmployeeList({
+  filteredEmployees,
+  handleEditEmployee,
+  handleDeleteEmployee,
+}: {
+  filteredEmployees: any[]
+  handleEditEmployee: (employee: any) => void
+  handleDeleteEmployee: (employeeId: string) => void
+}) {
   const [currentPage, setCurrentPage] = useState(1)
   const [itemsPerPage, setItemsPerPage] = useState(5)
 
-  // Reset pagination when filtered data changes
   useEffect(() => {
     setCurrentPage(1)
   }, [filteredEmployees])
 
-  // Calculate pagination values
   const totalItems = filteredEmployees.length
   const totalPages = Math.ceil(totalItems / itemsPerPage)
   const startIndex = (currentPage - 1) * itemsPerPage
   const endIndex = startIndex + itemsPerPage
   const paginatedEmployees = filteredEmployees.slice(startIndex, endIndex)
 
-  // Pagination handlers
-  const handlePageChange = (page: number) => {
-    setCurrentPage(page)
-  }
-
+  const handlePageChange = (page: number) => setCurrentPage(page)
   const handleItemsPerPageChange = (newItemsPerPage: number) => {
     setItemsPerPage(newItemsPerPage)
-    setCurrentPage(1) // Reset to first page when changing items per page
+    setCurrentPage(1)
   }
 
   return (
@@ -94,7 +95,7 @@ export default function EmployeeList({ filteredEmployees, handleEditEmployee, ha
                     </div>
                     <div>
                       <p className="text-sm text-gray-600">Employee ID</p>
-                      <p className="font-medium">EMP{employee.id.padStart(3, "0")}</p>
+                      <p className="font-medium">EMP{employee?.id}</p>
                     </div>
                   </div>
                 </div>
@@ -104,6 +105,7 @@ export default function EmployeeList({ filteredEmployees, handleEditEmployee, ha
                     <Edit className="mr-2 h-4 w-4" />
                     Edit
                   </Button>
+
                   <AlertDialog>
                     <AlertDialogTrigger asChild>
                       <Button
@@ -112,7 +114,7 @@ export default function EmployeeList({ filteredEmployees, handleEditEmployee, ha
                         className="text-red-600 hover:text-red-700 border-red-200 hover:border-red-300"
                       >
                         <Trash2 className="mr-2 h-4 w-4" />
-                        Delete 
+                        Delete
                       </Button>
                     </AlertDialogTrigger>
                     <AlertDialogContent>
@@ -124,7 +126,7 @@ export default function EmployeeList({ filteredEmployees, handleEditEmployee, ha
                       </AlertDialogHeader>
                       <AlertDialogFooter>
                         <AlertDialogCancel>Cancel</AlertDialogCancel>
-                        <AlertDialogAction 
+                        <AlertDialogAction
                           onClick={() => handleDeleteEmployee(employee.id)}
                           className="bg-red-600 hover:bg-red-700"
                         >
@@ -140,7 +142,6 @@ export default function EmployeeList({ filteredEmployees, handleEditEmployee, ha
         ))}
       </div>
 
-      {/* Pagination Component */}
       {totalItems > 0 && (
         <Pagination
           currentPage={currentPage}

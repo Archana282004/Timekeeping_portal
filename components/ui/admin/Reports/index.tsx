@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -41,6 +41,8 @@ import { Navigation } from "@/components/navigation"
 import { format } from "date-fns"
 import AnalyticsDashboard from "./ AnalyticsDashboard"
 import DepartmentHoursDistribution from "./DepartmentHoursDistribution"
+import { useAppDispatch, useAppSelector } from "@/store/hooks"
+import { departmentsdata, weekhourdata } from "@/store/actions/adminaction"
 
 interface ReportData {
   id: string
@@ -202,21 +204,25 @@ export default function Reports() {
       hoursWorked: 45.0
     }
   ]
+    const dispatch = useAppDispatch();
+  useEffect(()=>{
+    dispatch(departmentsdata())
+    dispatch(weekhourdata())
+  },[dispatch])
 
   // Chart data
-  const weeklyHoursData = [
-    { week: "Week 1", regular: 320, overtime: 45 },
-    { week: "Week 2", regular: 310, overtime: 38 },
-    { week: "Week 3", regular: 325, overtime: 52 },
-    { week: "Week 4", regular: 315, overtime: 41 }
-  ]
-
-  const departmentHoursData = [
-    { department: "Engineering", hours: 1680, color: "#8884d8" },
-    { department: "Marketing", hours: 1200, color: "#82ca9d" },
-    { department: "Sales", hours: 1440, color: "#ffc658" },
-    { department: "HR", hours: 800, color: "#ff7300" }
-  ]
+  
+  const weeklyHoursData = useAppSelector((state)=> state.admin.weeklyHoursData);
+  
+  
+  const departmentHoursData = useAppSelector((state)=> state.admin.departmentHoursData);
+  
+  // const departmentHoursData = [
+  //   { department: "Engineering", hours: 1680, color: "#8884d8" },
+  //   { department: "Marketing", hours: 1200, color: "#82ca9d" },
+  //   { department: "Sales", hours: 1440, color: "#ffc658" },
+  //   { department: "HR", hours: 800, color: "#ff7300" }
+  // ]
 
   const complianceTrendData = [
     { month: "Jan", issues: 12 },

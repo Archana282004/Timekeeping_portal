@@ -64,12 +64,12 @@ export default function TimecardsList({ filteredTimecards, handleApprove, handle
                 <div className="flex-1">
                   <div className="flex items-center space-x-4 mb-2">
                     <div>
-                      <h3 className="font-semibold text-lg">{timecard.employee}</h3>
+                      <h3 className="font-semibold text-lg">{timecard.user.name}</h3>
                       <p className="text-sm text-gray-600">
-                        {timecard.employeeId} • {timecard.department}
+                        {timecard.user.id} • {timecard.user.department}
                       </p>
                     </div>
-                    <Badge className={getStatusColor(timecard.status)}>{timecard.status}</Badge>
+                    <Badge className={getStatusColor(timecard.status)}>{timecard.user.status}</Badge>
                   </div>
 
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
@@ -222,7 +222,7 @@ export default function TimecardsList({ filteredTimecards, handleApprove, handle
           itemsPerPage={itemsPerPage}
           onPageChange={handlePageChange}
           onItemsPerPageChange={handleItemsPerPageChange}
-          itemsPerPageOptions={[5, 10, 20, 50]}
+          itemsPerPageOptions={[2, 5, 10, 20, 50]}
         />
       )}
     </>
