@@ -14,6 +14,8 @@ import {
   Statscardfetching,
   RecentCards,
   Dashboarduser,
+  Weekhourchart,
+  departmenthourchart,
 } from "../reducers/adminReducer";
 
 export const fetchUsers = (pagination: any) => async (dispatch: AppDispatch) => {
@@ -97,21 +99,27 @@ export const adminEmployeeCard = () => async (dispatch: AppDispatch) => {
 
 export const departmentsdata = () => async (dispatch: AppDispatch) => {
   try {
+    dispatch(departmenthourchart(true))
     const res: any = await API.get("/api/timecards/departmentHoursOverview");
     if (res.success) dispatch(DepartmentHoursData(res.data.data.departmentHoursData));
+    dispatch(departmenthourchart(false))
     return res.data;
   } catch (err) {
     console.log(err);
+    dispatch(departmenthourchart(false))
   }
 };
 
 export const weekhourdata = () => async (dispatch: AppDispatch) => {
   try {
+    dispatch(Weekhourchart(true))
     const res: any = await API.get("/api/timecards/weeklyHoursOverview");
     if (res.success) dispatch(WeeklyHours(res.data.data.weeklyHoursData));
+    dispatch(Weekhourchart(false))
     return res.data;
   } catch (err) {
     console.log(err);
+    dispatch(Weekhourchart(false))
   }
 };
 

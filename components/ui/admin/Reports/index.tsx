@@ -3,9 +3,16 @@
 import { Navigation } from "@/components/navigation"
 import AnalyticsDashboard from "./ AnalyticsDashboard"
 import DepartmentHoursDistribution from "./DepartmentHoursDistribution"
-import { useAppSelector } from "@/store/hooks"
+import { useAppDispatch, useAppSelector } from "@/store/hooks"
+import { useEffect } from "react"
+import { departmentsdata, weekhourdata } from "@/store/actions/adminaction"
 
 export default function Reports() {
+  const dispatch = useAppDispatch();
+  useEffect(()=>{
+    dispatch(weekhourdata()),
+    dispatch(departmentsdata())
+  },[])
   const weeklyHoursData = useAppSelector((state)=> state.admin.weeklyHoursData);
   const departmentHoursData = useAppSelector((state)=> state.admin.departmentHoursData);
 

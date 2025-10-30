@@ -22,6 +22,7 @@ import { Navigation } from "@/components/navigation";
 
 export default function EmployeeManagementPage() {
   const dispatch = useAppDispatch();
+
   const [searchTerm, setSearchTerm] = useState("");
   const [departmentFilter, setDepartmentFilter] = useState("all");
   const [statusFilter, setStatusFilter] = useState("all");
