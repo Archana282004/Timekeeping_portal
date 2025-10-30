@@ -9,7 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Users, Clock, AlertTriangle, CheckCircle, Download, Search } from "lucide-react"
 import Link from "next/link"
 import { Navigation } from "@/components/navigation"
-import { AdminMobileDashboard } from "./Dashboard/dashboard-mobile"
+import { AdminMobileDashboard } from "./dashboard/dashboard-mobile"
 
 export default function AdminDashboard() {
   const [searchTerm, setSearchTerm] = useState("")

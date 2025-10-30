@@ -20,7 +20,7 @@ import { usePathname, useRouter } from "next/navigation"
 import { MobileBottomNav } from "./mobile-bottom-nav"
 import { useAppDispatch } from "@/store/hooks"
 import Cookies from "js-cookie";
-import { logout } from "@/store/actions/authAction"
+import { logout } from "@/store/actions/auth-action"
 
 interface NavigationProps {
   userType: "employee" | "admin"

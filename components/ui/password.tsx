@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import SimpleReactValidator from "simple-react-validator"
 import { useAppDispatch } from "@/store/hooks"
-import { updateUserPassword } from "@/store/actions/userAction"
+import { updateUserPassword } from "@/store/actions/user-action"
 import { Navigation } from "@/components/navigation"
 
 interface UpdatePasswordTabProps {

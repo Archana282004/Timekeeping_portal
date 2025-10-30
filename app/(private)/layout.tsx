@@ -1,6 +1,6 @@
 import React from "react";
-import Header from "@/components/hoc/LayoutComponent/Header";
-import Footer from "@/components/hoc/LayoutComponent/Footer";
+import Header from "@/components/hoc/layout-component/header";
+import Footer from "@/components/hoc/layout-component/footer";
 import { cookies, headers } from "next/headers";
 import { redirect, RedirectType } from "next/navigation";
 

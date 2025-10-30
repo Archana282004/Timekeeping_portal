@@ -1,4 +1,4 @@
-import TimecardReviewPage from "@/components/ui/admin/ReviewTimeCard"
+import TimecardReviewPage from "@/components/ui/admin/review-timecard"
 
 export default function TimecardReview() {
   return <TimecardReviewPage />
