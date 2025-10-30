@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import { CardDescription, CardHeader, CardTitle } from "../../card";
 import { Button } from "../../button";
@@ -20,9 +20,7 @@ export default function EmployeeManagement() {
             <CardTitle>Employee Management</CardTitle>
             <CardDescription>View and manage employee information</CardDescription>
           </div>
-          <Button onClick={() => setIsAddDialogOpen(true)}>
-            Add Employee
-          </Button>
+          <Button onClick={() => setIsAddDialogOpen(true)}>Add Employee</Button>
         </div>
       </CardHeader>
 
@@ -32,5 +30,5 @@ export default function EmployeeManagement() {
         onAddEmployee={handleAddEmployee}
       />
     </>
-  )
+  );
 }

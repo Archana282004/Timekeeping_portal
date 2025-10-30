@@ -41,9 +41,13 @@ export default function Dashboard() {
     officeHours: "Monday - Friday: 9:00 AM - 6:00 PM",
   }
   const dispatch = useAppDispatch();
+  const TODAY =  new Date().toISOString().split("T")[0]
+  const WeekEnding = {
+    "weekEnding": "2025-10-19"
+  }
   useEffect(()=>{
     dispatch(StatusCardData());
-    dispatch(fetchMyWeekTimecards({"weekEnding": "2025-10-19"}))
+    dispatch(fetchMyWeekTimecards(WeekEnding))
   }, [dispatch])
   const week = useAppSelector((state)=> state.user.weekTimecards) ; 
   const weeklyHours = {

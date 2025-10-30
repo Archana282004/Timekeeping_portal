@@ -41,6 +41,7 @@ interface RegisterData {
   company_office_hours: string;
   password: string;
   status: string;
+  role:string
 }
 
 interface AddEmployeeDialogProps {
@@ -87,6 +88,7 @@ const AddEmployeeDialog = ({
     company_office_hours: "",
     password: "",
     status: "pending",
+    role:"employee"
   });
 
   const simpleValidator = useRef(new SimpleReactValidator());
@@ -112,8 +114,9 @@ const AddEmployeeDialog = ({
           company_phone: initialEmployee.company_phone ?? "",
           company_email: initialEmployee.company_email ?? "",
           company_office_hours: initialEmployee.company_office_hours ?? "",
-          password: "",
+          password: initialEmployee.password ?? "Bitcot@123",
           status: initialEmployee.status ?? "pending",
+          role:"employee"
         });
       } else {
         setRegisterData({
@@ -132,8 +135,9 @@ const AddEmployeeDialog = ({
           company_phone: "",
           company_email: "",
           company_office_hours: "",
-          password: registerData.password,
+          password: "Bitcot@123",
           status: "pending",
+          role:"employee"
         });
       }
       simpleValidator.current.hideMessages();
@@ -167,6 +171,8 @@ const AddEmployeeDialog = ({
         department: registerData.department.toLowerCase(),
         company_office_hours: registerData.company_office_hours,
         status: "pending",
+        role:"employee",
+
       };
 
       dispatch(addUser(addPayload));

@@ -33,14 +33,14 @@ interface Timecard {
   approvedAt?: string
 }
 
-export default function TimecardHistoryList({ 
-  filteredHistory, 
-  getStatusIcon, 
-  getStatusColor 
-}: { 
-  filteredHistory: Timecard[], 
-  getStatusIcon: (status: string) => React.ReactNode, 
-  getStatusColor: (status: string) => string 
+export default function TimecardHistoryList({
+  filteredHistory,
+  getStatusIcon,
+  getStatusColor
+}: {
+  filteredHistory: Timecard[],
+  getStatusIcon: (status: string) => React.ReactNode,
+  getStatusColor: (status: string) => string
 }) {
   const [selectedTimecard, setSelectedTimecard] = useState<Timecard | null>(null)
   const [isViewModalOpen, setIsViewModalOpen] = useState(false)
@@ -152,8 +152,8 @@ export default function TimecardHistoryList({
                 </div>
 
                 <div className="flex flex-col space-y-2 ml-4">
-                  <Button 
-                    variant="outline" 
+                  <Button
+                    variant="outline"
                     size="sm"
                     onClick={() => openViewModal(timecard)}
                   >
@@ -169,9 +169,9 @@ export default function TimecardHistoryList({
                     </Link>
                   )}
                   {timecard.status === "rejected" && (
-                    <Button 
-                      size="sm" 
-                      variant="outline" 
+                    <Button
+                      size="sm"
+                      variant="outline"
                       className="w-full bg-transparent"
                       onClick={() => openResubmitModal(timecard)}
                     >
