@@ -1,12 +1,32 @@
+import { useAppSelector } from "@/store/hooks"
 import { Card } from "../../card"
 import { CardHeader, CardTitle, CardContent } from "../../card"
 import { Users, Clock, AlertTriangle, CheckCircle } from "lucide-react"
+import { Skeleton } from "../../skeleton";
 
 
 
 export default function StatsCard({ stats }: { stats: { totalEmployees: number, pendingTimecards: number, complianceIssues: number, approvedThisWeek: number } }) {
+  const loading = useAppSelector((state)=> state.admin.statscard);
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+    (loading ?
+      ( <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+      {[...Array(4)].map((_, i) => (
+        <Card key={i}>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <Skeleton className="h-4 w-32" /> {/* Title placeholder */}
+            <Skeleton className="h-4 w-4 rounded-full" /> {/* Icon placeholder */}
+          </CardHeader>
+
+          <CardContent>
+            <Skeleton className="h-8 w-20 mb-2" /> {/* Number placeholder */}
+            <Skeleton className="h-3 w-28" /> {/* Text placeholder */}
+          </CardContent>
+        </Card>
+      ))}
+    </div>) :
+    (
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Total Employees</CardTitle>
@@ -51,5 +71,8 @@ export default function StatsCard({ stats }: { stats: { totalEmployees: number, 
             </CardContent>
           </Card>
         </div>
+    )
+    )
+    
   )
 }

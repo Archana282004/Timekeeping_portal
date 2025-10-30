@@ -11,15 +11,21 @@ import {
   AdminEmployeeCardsData,
   DepartmentHoursData,
   WeeklyHours,
+  Statscardfetching,
+  RecentCards,
+  Dashboarduser,
 } from "../reducers/adminReducer";
 
 export const fetchUsers = (pagination: any) => async (dispatch: AppDispatch) => {
   try {
+    dispatch(Dashboarduser(true))
     const res: any = await API.get("/api/auth/getAllUsers", pagination);
     if (res.success) dispatch(UserList(res.data.data.users));
+    dispatch(Dashboarduser(false))
     return res.data;
   } catch (err) {
     console.log(err);
+    dispatch(Dashboarduser(false))
   }
 };
 
@@ -45,11 +51,14 @@ export const editUser = (formData: any, id: number | string) => async (dispatch:
 
 export const fetchTimeCards = (pagination: any) => async (dispatch: AppDispatch) => {
   try {
+    dispatch(RecentCards(true))
     const res: any = await API.get("/api/timecards/getAllTimecards", pagination);
     if (res.success) dispatch(TimeCardList(res.data.data.items));
+    dispatch(RecentCards(false))
     return res.data;
   } catch (err) {
     console.log(err);
+    dispatch(RecentCards(false))
   }
 };
 
@@ -65,11 +74,14 @@ export const updateTimeCardStatus = (formData: any, id: number | string) => asyn
 
 export const fetchAdminDashboardStats = () => async (dispatch: AppDispatch) => {
   try {
+    dispatch(Statscardfetching(true))
     const res: any = await API.get("/api/timecards/adminDashboardStats");
     if (res.success) dispatch(AdminDashboardStats(res.data.data));
+    dispatch(Statscardfetching(false))
     return res.data;
   } catch (err) {
     console.log(err);
+    dispatch(Statscardfetching(false))
   }
 };
 

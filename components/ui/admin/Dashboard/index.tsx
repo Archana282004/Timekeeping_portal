@@ -35,40 +35,6 @@ export default function AdminDashboard() {
   }
 
   const recentTimecards = useAppSelector((state)=> state.admin.timeCardList)
-
-  // const recentTimecards = [
-  //   {
-  //     id: "1",
-  //     employee: "John Doe",
-  //     department: "Engineering",
-  //     weekEnding: "2024-01-15",
-  //     totalHours: 42.5,
-  //     overtime: 2.5,
-  //     status: "pending",
-  //     issues: ["Missing meal break on Tuesday"],
-  //   },
-  //   {
-  //     id: "2",
-  //     employee: "Jane Smith",
-  //     department: "Marketing",
-  //     weekEnding: "2024-01-15",
-  //     totalHours: 40.0,
-  //     overtime: 0,
-  //     status: "approved",
-  //     issues: [],
-  //   },
-  //   {
-  //     id: "3",
-  //     employee: "Mike Johnson",
-  //     department: "Sales",
-  //     weekEnding: "2024-01-15",
-  //     totalHours: 45.0,
-  //     overtime: 5.0,
-  //     status: "flagged",
-  //     issues: ["Excessive overtime", "No second meal break"],
-  //   },
-  // ]
-
   useEffect(()=>{
     dispatch(fetchUsers({ page: 1, limit: 50 }));
     dispatch(fetchTimeCards({page:1}))

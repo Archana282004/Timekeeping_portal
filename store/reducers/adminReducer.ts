@@ -88,6 +88,9 @@ interface AdminState {
   adminEmployeecardsData: AdminEmployeeCards[];
   departmentHoursData: DepartmentHours[];
   weeklyHoursData: WeeklyHours[];
+  statscard:boolean;
+  recenttimecards:boolean;
+  user:boolean;
 }
 
 const initialState: AdminState = {
@@ -97,6 +100,9 @@ const initialState: AdminState = {
   adminEmployeecardsData: [],
   departmentHoursData: [],
   weeklyHoursData: [],
+  statscard:true,
+  recenttimecards:true,
+  user:true
 };
 
 export const adminSlice = createSlice({
@@ -128,6 +134,15 @@ export const adminSlice = createSlice({
     WeeklyHours: (state, action: PayloadAction<WeeklyHours[]>) => {
       state.weeklyHoursData = action.payload;
     },
+    Statscardfetching:(state, action:PayloadAction<boolean>) => {
+      state.statscard = action.payload;
+    },
+    RecentCards:(state, action:PayloadAction<boolean>) => {
+      state.recenttimecards = action.payload;
+    }, 
+    Dashboarduser:(state, action:PayloadAction<boolean>) => {
+      state.user = action.payload;
+    }
   },
 });
 
@@ -140,6 +155,9 @@ export const {
   AdminEmployeeCardsData,
   DepartmentHoursData,
   WeeklyHours,
+  Statscardfetching,
+  RecentCards, 
+  Dashboarduser
 } = adminSlice.actions;
 
 export default adminSlice.reducer;

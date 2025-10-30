@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import {
@@ -29,9 +29,7 @@ interface NavigationProps {
 export function Navigation({ userType }: NavigationProps) {
   const [isOpen, setIsOpen] = useState(false)
   const pathname = usePathname()
-  useEffect(()=>{
 
-  },[])
   const employeeLinks = [
     { href: "/employee-dashboard", label: "Dashboard", icon: Home },
     {
