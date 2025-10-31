@@ -90,7 +90,6 @@ export default function EmployeeManagementPage() {
     setIsEditDialogOpen(false);
     setSelectedEmployee(null);
   };
-
   return (
     <div className="min-h-screen bg-gray-50">
       <Navigation userType="admin" />

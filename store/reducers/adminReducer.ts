@@ -93,6 +93,7 @@ interface AdminState {
   user:boolean;
   weekhour:boolean;
   departmenthour:boolean;
+  adminemployee:boolean;
 }
 
 const initialState: AdminState = {
@@ -107,6 +108,7 @@ const initialState: AdminState = {
   user:true, 
   weekhour:true,
   departmenthour:true,
+  adminemployee:true,
 };
 
 export const adminSlice = createSlice({
@@ -153,6 +155,9 @@ export const adminSlice = createSlice({
     departmenthourchart:(state, action:PayloadAction<boolean>) => {
       state.departmenthour = action.payload;
     },
+    AdminEmployee:(state, action:PayloadAction<boolean>) => {
+      state.adminemployee = action.payload;
+    }
   },
 });
 
@@ -169,7 +174,8 @@ export const {
   RecentCards, 
   Dashboarduser,
   Weekhourchart, 
-  departmenthourchart
+  departmenthourchart,
+  AdminEmployee
 } = adminSlice.actions;
 
 export default adminSlice.reducer;

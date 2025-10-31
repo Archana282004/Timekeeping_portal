@@ -13,6 +13,8 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { Pagination } from "../../../pagination"
 import ComplianceIssues from "./compliance-issues"
 import DailyEntries from "./daily-enries"
+import { useAppSelector } from "@/store/hooks"
+import { Skeleton } from "../../skeleton"
 
 export default function TimecardsList({ filteredTimecards, handleApprove, handleReject, handleFlag, reviewNotes, setReviewNotes, selectedTimecard, setSelectedTimecard }: { filteredTimecards: any[], handleApprove: (timecardId: string) => void, handleReject: (timecardId: string) => void, handleFlag: (timecardId: string) => void, reviewNotes: string, setReviewNotes: (value: string) => void, selectedTimecard: any, setSelectedTimecard: (timecard: any) => void }) {
   // Pagination state
@@ -54,9 +56,68 @@ export default function TimecardsList({ filteredTimecards, handleApprove, handle
     }
   }
 
+  const loading = useAppSelector((state)=> state.admin.recenttimecards)
+
   return (
-    <>
+  (
+    loading ?
+    (
       <div className="space-y-4">
+      {Array.from({ length: 5 }).map((_, index) => (
+        <Card
+          key={index}
+          className="hover:shadow-md transition-shadow"
+        >
+          <CardContent className="pt-6">
+            <div className="flex items-start justify-between">
+              <div className="flex-1">
+                <div className="flex items-center space-x-4 mb-2">
+                  <div>
+                    <Skeleton className="h-5 w-40 mb-1" />
+                    <Skeleton className="h-4 w-32" /> 
+                  </div>
+                  <Skeleton className="h-5 w-16 rounded-full" /> 
+                </div>
+
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
+                  <div>
+                    <Skeleton className="h-3 w-24 mb-1" />
+                    <Skeleton className="h-5 w-20" /> 
+                  </div>
+                  <div>
+                    <Skeleton className="h-3 w-24 mb-1" />
+                    <Skeleton className="h-5 w-20" />
+                  </div>
+                  <div>
+                    <Skeleton className="h-3 w-24 mb-1" />
+                    <Skeleton className="h-5 w-20" />
+                  </div>
+                  <div>
+                    <Skeleton className="h-3 w-24 mb-1" />
+                    <Skeleton className="h-5 w-20" />
+                  </div>
+                </div>
+
+                <Skeleton className="h-4 w-3/4" />
+              </div>
+
+              <div className="flex flex-col space-y-2 ml-4">
+                <Skeleton className="h-8 w-24 rounded-md" />
+                <div className="flex space-x-2">
+                  <Skeleton className="h-8 w-8 rounded-md" /> 
+                  <Skeleton className="h-8 w-8 rounded-md" /> 
+                  <Skeleton className="h-8 w-8 rounded-md" />
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      ))}
+    </div>
+    )
+    :
+    (
+            <div className="space-y-4">
         {paginatedTimecards.map((timecard) => (
           <Card key={timecard.id} className="hover:shadow-md transition-shadow">
             <CardContent className="pt-6">
@@ -211,9 +272,7 @@ export default function TimecardsList({ filteredTimecards, handleApprove, handle
             </CardContent>
           </Card>
         ))}
-      </div>
-
-      {/* Pagination Component */}
+         {/* Pagination Component */}
       {totalItems > 0 && (
         <Pagination
           currentPage={currentPage}
@@ -225,6 +284,10 @@ export default function TimecardsList({ filteredTimecards, handleApprove, handle
           itemsPerPageOptions={[2, 5, 10, 20, 50]}
         />
       )}
-    </>
+      </div>
+
+     
+    )
+  )
   )
 }

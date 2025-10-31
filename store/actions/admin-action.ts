@@ -16,6 +16,7 @@ import {
   Dashboarduser,
   Weekhourchart,
   departmenthourchart,
+  AdminEmployee,
 } from "../reducers/adminReducer";
 
 export const fetchUsers = (pagination: any) => async (dispatch: AppDispatch) => {
@@ -89,11 +90,14 @@ export const fetchAdminDashboardStats = () => async (dispatch: AppDispatch) => {
 
 export const adminEmployeeCard = () => async (dispatch: AppDispatch) => {
   try {
+    dispatch(AdminEmployee(true))
     const res: any = await API.get("api/timecards/adminEmployeeCardsData");
     if (res.success) dispatch(AdminEmployeeCardsData(res.data.data));
+    dispatch(AdminEmployee(false))
     return res.data;
   } catch (err) {
     console.log(err);
+    dispatch(AdminEmployee(false))
   }
 };
 
