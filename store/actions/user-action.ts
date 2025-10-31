@@ -10,6 +10,7 @@ import {
   TodaystatusCard,
   StatusToday,
   Weekactivity,
+  Historycard,
 } from "../reducers/userReducer";
 
 export const fetchUser = (id: number | string) => async (dispatch: AppDispatch) => {
@@ -47,11 +48,14 @@ export const todayStatus = () => async (dispatch: AppDispatch) => {
 
 export const HistoryPageData = () => async (dispatch: AppDispatch) => {
   try {
+    dispatch(Historycard(true))
     const res = await API.get("/api/timecards/getMyTimecardsHistory");
     if (res.success) dispatch(HistoryPage(res.data.data));
+    dispatch(Historycard(false))
     return res.data;
   } catch (err) {
     console.log(err);
+     dispatch(Historycard(false))
   }
 };
 

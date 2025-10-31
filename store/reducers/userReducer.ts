@@ -66,7 +66,8 @@ interface EmployeeState {
   historyPage: WeekHistory[];
   statusCard: TodayStatusCard[];
   status:boolean;
-  weekcard:boolean
+  weekcard:boolean;
+  historycards:boolean;
 }
 
 const initialState: EmployeeState = {
@@ -77,7 +78,7 @@ const initialState: EmployeeState = {
   statusCard: [],
   status:true,
   weekcard: true,
-
+  historycards:true
 };
 
 export const userSlice = createSlice({
@@ -105,9 +106,12 @@ export const userSlice = createSlice({
     Weekactivity:(state, action: PayloadAction<boolean>) => {
       state.weekcard = action.payload;
     },
+    Historycard:(state, action: PayloadAction<boolean>) => {
+      state.historycards = action.payload;
+    }
   },
 });
 
-export const {UserList, WeekTimecards, TodayStatus, HistoryPage, TodaystatusCard, StatusToday, Weekactivity } = userSlice.actions;
+export const {UserList, WeekTimecards, TodayStatus, HistoryPage, TodaystatusCard, StatusToday, Weekactivity , Historycard} = userSlice.actions;
 
 export default userSlice.reducer;
