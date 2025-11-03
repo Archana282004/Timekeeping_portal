@@ -15,6 +15,8 @@ import QuickActions from "./quick-actions"
 import RecentActivityCard from "./recent-activity-card"
 import { useAppDispatch, useAppSelector } from "@/store/hooks"
 import { fetchMyWeekTimecards, StatusCardData } from "@/store/actions/user-action"
+import Cookies from "js-cookie"
+
 
 export default function Dashboard() {
   const [currentTime, setCurrentTime] = useState(new Date())
@@ -25,38 +27,30 @@ export default function Dashboard() {
     return () => clearInterval(timer)
   }, [])
 
-  // Mock data
-  const employee = {
-    name: "John Doe",
-    position: "Software Developer",
-    department: "Engineering",
-    employeeId: "EMP001",
+  const CookieData = Cookies.get('user');
+  if (!CookieData) {
+    console.warn("⚠️ No user cookie found");
+    return;
   }
-
-  const company = {
-    name: "TechCorp Solutions",
-    address: "123 Business Ave, San Francisco, CA 94105",
-    phone: "(555) 123-4567",
-    email: "hr@techcorp.com",
-    officeHours: "Monday - Friday: 9:00 AM - 6:00 PM",
-  }
+  const employee= JSON.parse(CookieData);
+  const company = JSON.parse(CookieData);
   const dispatch = useAppDispatch();
-  const TODAY =  new Date().toISOString().split("T")[0]
+  const TODAY = new Date().toISOString().split("T")[0]
   const WeekEnding = {
     "weekEnding": "2025-10-19"
   }
-  useEffect(()=>{
+  useEffect(() => {
     dispatch(StatusCardData());
     dispatch(fetchMyWeekTimecards(WeekEnding))
   }, [dispatch])
-  const week = useAppSelector((state)=> state.user.weekTimecards) ; 
+  const week = useAppSelector((state) => state.user.weekTimecards);
   const weeklyHours = {
     regular: week?.timecard?.regularHours,
     overtime: week?.timecard?.overtime,
     total: week?.timecard?.totalHours,
   }
-  
-  const status = useAppSelector((state)=> state.user.statusCard); 
+
+  const status = useAppSelector((state) => state.user.statusCard);
   const todayStatus = {
     clockedIn: status.clockedIn,
     startTime: status.startTime,
@@ -64,14 +58,14 @@ export default function Dashboard() {
     hoursWorked: status.hoursWorked,
   }
 
- const recentActivity = week?.timecard?.dailyEntries
-  ?.slice(0, 3)
-  ?.map((entry) => ({
-    date: entry.date.split("T")[0],
-    hours: entry.hours,
-    status: week.timecard.status,
-    overtime: week.timecard.overtime,
-  })) || [];
+  const recentActivity = week?.timecard?.dailyEntries
+    ?.slice(0, 3)
+    ?.map((entry) => ({
+      date: entry.date.split("T")[0],
+      hours: entry.hours,
+      status: week.timecard.status,
+      overtime: week.timecard.overtime,
+    })) || [];
 
 
 

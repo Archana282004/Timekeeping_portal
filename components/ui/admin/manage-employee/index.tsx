@@ -81,7 +81,7 @@ export default function EmployeeManagementPage() {
     setIsEditDialogOpen(true);
   };
 
-  const handleDeleteEmployee = async (employeeId: any) => {
+  const handleDeleteEmployee = async (employeeId: any) => { debugger
     await dispatch(DeleteUser(employeeId));
   };
 

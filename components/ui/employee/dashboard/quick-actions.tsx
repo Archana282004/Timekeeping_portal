@@ -6,16 +6,14 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge"
 import { Clock, Calendar, CheckCircle, Building, Phone, Mail, Coffee } from "lucide-react"
 import Link from "next/link"
+import Cookies from "js-cookie"
 
 
 export default function QuickActions({ company }: { company: any }) {
 
-
-
-
- 
-
-
+const CookieData= Cookies.get('user');
+ const user = JSON.parse(CookieData)
+debugger
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
     <Card>
@@ -65,21 +63,21 @@ export default function QuickActions({ company }: { company: any }) {
       </CardHeader>
       <CardContent className="space-y-3">
         <div>
-          <h4 className="font-medium">{company.name}</h4>
-          <p className="text-sm text-gray-600">{company.address}</p>
+          <h4 className="font-medium">{user.company_name}</h4>
+          <p className="text-sm text-gray-600">{user.company_address}</p>
         </div>
         <div className="flex items-center text-sm">
           <Phone className="mr-2 h-4 w-4 text-gray-400" />
-          {company.phone}
+          {user.company_phone}
         </div>
         <div className="flex items-center text-sm">
           <Mail className="mr-2 h-4 w-4 text-gray-400" />
-          {company.email}
+          {user.company_email}
         </div>
         <div className="text-sm">
           <span className="font-medium">Office Hours:</span>
           <br />
-          {company.officeHours}
+          {user.company_office_hours}
         </div>
       </CardContent>
     </Card>

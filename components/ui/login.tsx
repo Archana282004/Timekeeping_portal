@@ -86,21 +86,7 @@ export const Login = ({ loginData, setLoginData, handleLogin }: LoginProps) => {
         Sign In
       </Button>
 
-      {/* Demo Info */}
-      <div className="space-y-2 text-sm text-center text-gray-600 bg-blue-50 p-4 rounded-lg border border-blue-200">
-        <p className="font-medium text-blue-800">Demo Login Credentials:</p>
-        <div className="space-y-1">
-          <p className="font-mono text-xs">
-            <strong>Employee:</strong> john.doe@company.com / password123
-          </p>
-          <p className="font-mono text-xs">
-            <strong>Admin:</strong> admin@company.com / admin123
-          </p>
-        </div>
-        <p className="text-xs text-blue-600 mt-2">
-          Click the email field and use these credentials to login
-        </p>
-      </div>
+    
     </form>
   )
 }

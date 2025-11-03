@@ -97,13 +97,13 @@ export const put = async (url: string, body: object) => {
 };
 export const del = async (url: string) => {
     const res: any  = await new Promise((resolve, reject) => {
-        API.del(url, body).then(async (res: any) => {
+        API.del(url).then(async (res: any) => {
             if(res.success) {
                 resolve(res);
             } else if(res.status === 422 || res.status === 401) {
                 const reFRes = await refreshToken(store.dispatch);
                 if(reFRes) {
-                    const recallRes = await API.del(url, body);
+                    const recallRes = await API.del(url);
                     if(res.success) { 
                         resolve(recallRes);
                     } else {

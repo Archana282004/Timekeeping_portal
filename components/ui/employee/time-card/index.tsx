@@ -200,14 +200,8 @@ export default function TimecardPage() {
           removeTimeEntry={() => {}}
         />
 
-        {/* Submit Button */}
-        <div className="flex justify-end space-x-4 mt-8">
-          <Button variant="outline">Save Draft</Button>
-          <Button onClick={handleSubmit} disabled={complianceIssues.length > 0}>
-            Submit Timecard
-          </Button>
+       
         </div>
       </div>
-    </div>
   )
 }
