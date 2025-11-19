@@ -5,19 +5,27 @@ import { Label } from "../../label"
 import { Input } from "../../input"
 import { Textarea } from "../../textarea"
 import { Badge } from "../../badge"
-import { 
-  Dialog, 
-  DialogContent, 
-  DialogHeader, 
-  DialogTitle, 
-  DialogDescription, 
-  DialogFooter 
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter
 } from "../../dialog"
 import { useState } from "react"
 import { addDailyEntry } from "@/store/actions/user-action"
 import { useAppDispatch } from "@/store/hooks"
 
-export default function TimeEntriesCard({ timeEntries, addTimeEntry, updateTimeEntry, removeTimeEntry }: { timeEntries: any[], addTimeEntry: () => void, updateTimeEntry: (id: string, field: string, value: string | number) => void, removeTimeEntry: (id: string) => void }) {
+interface TimeEntriesCardProps {
+  timeEntries: any[],
+  addTimeEntry: () => void,
+  updateTimeEntry: (id: string,
+    field: string,
+    value: string | number) => void,
+  removeTimeEntry: (id: string) => void
+}
+const TimeEntriesCard = ({ timeEntries, addTimeEntry, updateTimeEntry, removeTimeEntry }: TimeEntriesCardProps ) => {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false)
 
   const [newEntry, setNewEntry] = useState({
@@ -77,7 +85,7 @@ export default function TimeEntriesCard({ timeEntries, addTimeEntry, updateTimeE
         </CardHeader>
         <CardContent className="space-y-6">
           {timeEntries.map((entry, index) => (
-  <div key={entry.id ?? index} className="border rounded-lg p-4 space-y-4">
+            <div key={entry.id ?? index} className="border rounded-lg p-4 space-y-4">
 
               <div className="flex items-center justify-between">
                 <h4 className="font-medium">Day {index + 1}</h4>
@@ -171,7 +179,7 @@ export default function TimeEntriesCard({ timeEntries, addTimeEntry, updateTimeE
               Enter the details for your new time entry. All fields except notes are required.
             </DialogDescription>
           </DialogHeader>
-          
+
           <div className="space-y-6 py-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
@@ -180,7 +188,7 @@ export default function TimeEntriesCard({ timeEntries, addTimeEntry, updateTimeE
                   id="new-date"
                   type="date"
                   value={newEntry.date}
-                  onChange={(e) => setNewEntry({...newEntry, date: e.target.value})}
+                  onChange={(e) => setNewEntry({ ...newEntry, date: e.target.value })}
                   required
                 />
               </div>
@@ -192,7 +200,7 @@ export default function TimeEntriesCard({ timeEntries, addTimeEntry, updateTimeE
                   type="number"
                   min="0"
                   value={newEntry.breakMinutes}
-                  onChange={(e) => setNewEntry({...newEntry, breakMinutes: Number.parseInt(e.target.value) || 0})}
+                  onChange={(e) => setNewEntry({ ...newEntry, breakMinutes: Number.parseInt(e.target.value) || 0 })}
                 />
               </div>
 
@@ -202,7 +210,7 @@ export default function TimeEntriesCard({ timeEntries, addTimeEntry, updateTimeE
                   id="new-start"
                   type="time"
                   value={newEntry.startTime}
-                  onChange={(e) => setNewEntry({...newEntry, startTime: e.target.value})}
+                  onChange={(e) => setNewEntry({ ...newEntry, startTime: e.target.value })}
                   required
                 />
               </div>
@@ -213,7 +221,7 @@ export default function TimeEntriesCard({ timeEntries, addTimeEntry, updateTimeE
                   id="new-end"
                   type="time"
                   value={newEntry.endTime}
-                  onChange={(e) => setNewEntry({...newEntry, endTime: e.target.value})}
+                  onChange={(e) => setNewEntry({ ...newEntry, endTime: e.target.value })}
                   required
                 />
               </div>
@@ -225,7 +233,7 @@ export default function TimeEntriesCard({ timeEntries, addTimeEntry, updateTimeE
                 id="new-notes"
                 placeholder="Add any notes about this day..."
                 value={newEntry.notes}
-                onChange={(e) => setNewEntry({...newEntry, notes: e.target.value})}
+                onChange={(e) => setNewEntry({ ...newEntry, notes: e.target.value })}
               />
             </div>
 
@@ -248,7 +256,7 @@ export default function TimeEntriesCard({ timeEntries, addTimeEntry, updateTimeE
             <Button variant="outline" onClick={handleCancel}>
               Cancel
             </Button>
-            <Button 
+            <Button
               onClick={handleAddEntry}
               disabled={!newEntry.date || !newEntry.startTime || !newEntry.endTime}
             >
@@ -260,3 +268,5 @@ export default function TimeEntriesCard({ timeEntries, addTimeEntry, updateTimeE
     </>
   )
 }
+
+export default TimeEntriesCard;

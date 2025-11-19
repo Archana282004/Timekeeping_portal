@@ -47,7 +47,7 @@ interface Timecard {
   submittedAt: string
 }
 
-export default function TimecardReviewPage() {
+const TimecardReviewPage = () => {
   const [searchTerm, setSearchTerm] = useState("")
   const [statusFilter, setStatusFilter] = useState("all")
   const [selectedTimecard, setSelectedTimecard] = useState<Timecard | null>(null)
@@ -123,3 +123,5 @@ export default function TimecardReviewPage() {
     </div>
   )
 }
+
+export default TimecardReviewPage;

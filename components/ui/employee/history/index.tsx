@@ -13,9 +13,10 @@ import Link from "next/link"
 import SummaryStats from "./summary-stats"
 import FirstTimecard from "./first-timecard"
 import Filter from "./filter"
-import TimecardHistoryList from "./timecard-history-list"
+import TimecardHistoryList from "./timecard-list"
 import { useAppDispatch, useAppSelector } from "@/store/hooks"
 import { HistoryPageData } from "@/store/actions/user-action"
+import PageHeader from "../../pageheader"
 
 interface TimecardHistory {
   id: string
@@ -34,11 +35,11 @@ interface TimecardHistory {
   }[]
 }
 
-export default function TimecardHistoryPage() {
+const TimecardHistoryPage = () => {
   const [searchTerm, setSearchTerm] = useState("")
   const [statusFilter, setStatusFilter] = useState("all")
   const [selectedPeriod, setSelectedPeriod] = useState("last-30")
-  
+
   // Pagination state
   const [currentPage, setCurrentPage] = useState(1)
   const [itemsPerPage, setItemsPerPage] = useState(5)
@@ -383,13 +384,13 @@ export default function TimecardHistoryPage() {
   }
 
   const dispatch = useAppDispatch();
-  useEffect(()=>{
+  useEffect(() => {
     dispatch(HistoryPageData())
-  },[dispatch])
-  const totalHoursAllTime = useAppSelector((state)=> state.user.historyPage.totalHours);
-  const totalOvertimeAllTime = useAppSelector((state)=> state.user.historyPage.overtimeHours);
-  const total = useAppSelector((state)=> state.user.historyPage.totalTimecards);
-  const approvalrate = useAppSelector((state)=> state.user.historyPage.approvalRate)
+  }, [dispatch])
+  const totalHoursAllTime = useAppSelector((state) => state.user.historyPage.totalHours);
+  const totalOvertimeAllTime = useAppSelector((state) => state.user.historyPage.overtimeHours);
+  const total = useAppSelector((state) => state.user.historyPage.totalTimecards);
+  const approvalrate = useAppSelector((state) => state.user.historyPage.approvalRate)
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -398,10 +399,10 @@ export default function TimecardHistoryPage() {
       <div className="container mx-auto px-4 py-8">
         <div className="mb-8">
           <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-3xl font-bold text-gray-900">Timecard History</h1>
-              <p className="text-gray-600">View your submitted timecards and their status</p>
-            </div>
+            <PageHeader
+              title="Timecard History"
+              description="View your submitted timecards and their status"
+            />
             <Button variant="outline">
               <Download className="mr-2 h-4 w-4" />
               Export
@@ -413,20 +414,20 @@ export default function TimecardHistoryPage() {
         <SummaryStats filteredHistory={total} totalHoursAllTime={totalHoursAllTime} totalOvertimeAllTime={totalOvertimeAllTime} approvalrate={approvalrate} />
 
         {/* Filters */}
-        <Filter 
-          searchTerm={searchTerm} 
-          setSearchTerm={handleSearchChange} 
-          statusFilter={statusFilter} 
-          setStatusFilter={handleStatusFilterChange} 
-          selectedPeriod={selectedPeriod} 
-          setSelectedPeriod={handlePeriodChange} 
-        />         
+        <Filter
+          searchTerm={searchTerm}
+          setSearchTerm={handleSearchChange}
+          statusFilter={statusFilter}
+          setStatusFilter={handleStatusFilterChange}
+          selectedPeriod={selectedPeriod}
+          setSelectedPeriod={handlePeriodChange}
+        />
 
         {/* Timecard History List */}
-        <TimecardHistoryList 
-          filteredHistory={paginatedHistory} 
-          getStatusIcon={getStatusIcon} 
-          getStatusColor={getStatusColor} 
+        <TimecardHistoryList
+          filteredHistory={paginatedHistory}
+          getStatusIcon={getStatusIcon}
+          getStatusColor={getStatusColor}
         />
 
         {/* Pagination */}
@@ -447,3 +448,5 @@ export default function TimecardHistoryPage() {
     </div>
   )
 }
+
+export default TimecardHistoryPage;

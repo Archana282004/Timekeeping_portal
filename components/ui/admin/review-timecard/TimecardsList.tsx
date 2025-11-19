@@ -16,7 +16,25 @@ import DailyEntries from "./daily-enries"
 import { useAppSelector } from "@/store/hooks"
 import { Skeleton } from "../../skeleton"
 
-export default function TimecardsList({ filteredTimecards, handleApprove, handleReject, handleFlag, reviewNotes, setReviewNotes, selectedTimecard, setSelectedTimecard }: { filteredTimecards: any[], handleApprove: (timecardId: string) => void, handleReject: (timecardId: string) => void, handleFlag: (timecardId: string) => void, reviewNotes: string, setReviewNotes: (value: string) => void, selectedTimecard: any, setSelectedTimecard: (timecard: any) => void }) {
+interface TimecardsListProps {
+  filteredTimecards: any[],
+  handleApprove: (timecardId: string) => void,
+  handleReject: (timecardId: string) => void,
+  handleFlag: (timecardId: string) => void,
+  reviewNotes: string,
+  setReviewNotes: (value: string) => void,
+  selectedTimecard: any,
+  setSelectedTimecard: (timecard: any) => void
+}
+const  TimecardsList = (
+  { filteredTimecards,
+    handleApprove,
+    handleReject,
+    handleFlag,
+    reviewNotes,
+    setReviewNotes,
+    selectedTimecard,
+    setSelectedTimecard }: TimecardsListProps) => {
   // Pagination state
   const [currentPage, setCurrentPage] = useState(1)
   const [itemsPerPage, setItemsPerPage] = useState(5)
@@ -56,238 +74,241 @@ export default function TimecardsList({ filteredTimecards, handleApprove, handle
     }
   }
 
-  const loading = useAppSelector((state)=> state.admin.recenttimecards)
+  const loading = useAppSelector((state) => state.admin.recenttimecards)
 
   return (
-  (
-    loading ?
     (
-      <div className="space-y-4">
-      {Array.from({ length: 5 }).map((_, index) => (
-        <Card
-          key={index}
-          className="hover:shadow-md transition-shadow"
-        >
-          <CardContent className="pt-6">
-            <div className="flex items-start justify-between">
-              <div className="flex-1">
-                <div className="flex items-center space-x-4 mb-2">
-                  <div>
-                    <Skeleton className="h-5 w-40 mb-1" />
-                    <Skeleton className="h-4 w-32" /> 
-                  </div>
-                  <Skeleton className="h-5 w-16 rounded-full" /> 
-                </div>
+      loading ?
+        (
+          <div className="space-y-4">
+            {Array.from({ length: 5 }).map((_, index) => (
+              <Card
+                key={index}
+                className="hover:shadow-md transition-shadow"
+              >
+                <CardContent className="pt-6">
+                  <div className="flex items-start justify-between">
+                    <div className="flex-1">
+                      <div className="flex items-center space-x-4 mb-2">
+                        <div>
+                          <Skeleton className="h-5 w-40 mb-1" />
+                          <Skeleton className="h-4 w-32" />
+                        </div>
+                        <Skeleton className="h-5 w-16 rounded-full" />
+                      </div>
 
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
-                  <div>
-                    <Skeleton className="h-3 w-24 mb-1" />
-                    <Skeleton className="h-5 w-20" /> 
-                  </div>
-                  <div>
-                    <Skeleton className="h-3 w-24 mb-1" />
-                    <Skeleton className="h-5 w-20" />
-                  </div>
-                  <div>
-                    <Skeleton className="h-3 w-24 mb-1" />
-                    <Skeleton className="h-5 w-20" />
-                  </div>
-                  <div>
-                    <Skeleton className="h-3 w-24 mb-1" />
-                    <Skeleton className="h-5 w-20" />
-                  </div>
-                </div>
+                      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
+                        <div>
+                          <Skeleton className="h-3 w-24 mb-1" />
+                          <Skeleton className="h-5 w-20" />
+                        </div>
+                        <div>
+                          <Skeleton className="h-3 w-24 mb-1" />
+                          <Skeleton className="h-5 w-20" />
+                        </div>
+                        <div>
+                          <Skeleton className="h-3 w-24 mb-1" />
+                          <Skeleton className="h-5 w-20" />
+                        </div>
+                        <div>
+                          <Skeleton className="h-3 w-24 mb-1" />
+                          <Skeleton className="h-5 w-20" />
+                        </div>
+                      </div>
 
-                <Skeleton className="h-4 w-3/4" />
-              </div>
+                      <Skeleton className="h-4 w-3/4" />
+                    </div>
 
-              <div className="flex flex-col space-y-2 ml-4">
-                <Skeleton className="h-8 w-24 rounded-md" />
-                <div className="flex space-x-2">
-                  <Skeleton className="h-8 w-8 rounded-md" /> 
-                  <Skeleton className="h-8 w-8 rounded-md" /> 
-                  <Skeleton className="h-8 w-8 rounded-md" />
-                </div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      ))}
-    </div>
+                    <div className="flex flex-col space-y-2 ml-4">
+                      <Skeleton className="h-8 w-24 rounded-md" />
+                      <div className="flex space-x-2">
+                        <Skeleton className="h-8 w-8 rounded-md" />
+                        <Skeleton className="h-8 w-8 rounded-md" />
+                        <Skeleton className="h-8 w-8 rounded-md" />
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        )
+        :
+        (
+          <div className="space-y-4">
+            {paginatedTimecards.map((timecard) => (
+              <Card key={timecard.id} className="hover:shadow-md transition-shadow">
+                <CardContent className="pt-6">
+                  <div className="flex items-start justify-between">
+                    <div className="flex-1">
+                      <div className="flex items-center space-x-4 mb-2">
+                        <div>
+                          <h3 className="font-semibold text-lg">{timecard.user.name}</h3>
+                          <p className="text-sm text-gray-600">
+                            {timecard.user.id} • {timecard.user.department}
+                          </p>
+                        </div>
+                        <Badge className={getStatusColor(timecard.status)}>{timecard.user.status}</Badge>
+                      </div>
+
+                      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
+                        <div>
+                          <p className="text-sm text-gray-600">Week Ending</p>
+                          <p className="font-medium">{timecard.weekEnding}</p>
+                        </div>
+                        <div>
+                          <p className="text-sm text-gray-600">Total Hours</p>
+                          <p className="font-medium">{timecard.totalHours}h</p>
+                        </div>
+                        <div>
+                          <p className="text-sm text-gray-600">Regular Hours</p>
+                          <p className="font-medium">{timecard.regularHours}h</p>
+                        </div>
+                        <div>
+                          <p className="text-sm text-gray-600">Overtime</p>
+                          <p className="font-medium text-orange-600">{timecard.overtime}h</p>
+                        </div>
+                      </div>
+
+                      <ComplianceIssues timecard={timecard} />
+                    </div>
+
+                    <div className="flex flex-col space-y-2 ml-4">
+                      <Dialog>
+                        <DialogTrigger asChild>
+                          <Button variant="outline" size="sm" onClick={() => setSelectedTimecard(timecard)}>
+                            <Eye className="mr-2 h-4 w-4" />
+                            View Details
+                          </Button>
+                        </DialogTrigger>
+                        <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
+                          <DialogHeader>
+                            <DialogTitle>Timecard Details - {timecard.employee}</DialogTitle>
+                            <DialogDescription>
+                              Week ending {timecard.weekEnding} • Submitted{" "}
+                              {new Date(timecard.submittedAt).toLocaleDateString()}
+                            </DialogDescription>
+                          </DialogHeader>
+
+                          <DailyEntries selectedTimecard={selectedTimecard} reviewNotes={reviewNotes} setReviewNotes={setReviewNotes} handleApprove={handleApprove} handleReject={handleReject} handleFlag={handleFlag} />
+                        </DialogContent>
+                      </Dialog>
+
+                      {timecard.status === "pending" && (
+                        <div className="flex space-x-2">
+                          {/* Approve Button with Confirmation */}
+                          <AlertDialog>
+                            <AlertDialogTrigger asChild>
+                              <Button
+                                size="sm"
+                                className="bg-green-600 hover:bg-green-700"
+                              >
+                                <CheckCircle className="h-4 w-4" />
+                              </Button>
+                            </AlertDialogTrigger>
+                            <AlertDialogContent>
+                              <AlertDialogHeader>
+                                <AlertDialogTitle>Approve Timecard</AlertDialogTitle>
+                                <AlertDialogDescription>
+                                  Are you sure you want to approve the timecard for {timecard.employee}?
+                                  This action will mark the timecard as approved and cannot be undone.
+                                </AlertDialogDescription>
+                              </AlertDialogHeader>
+                              <AlertDialogFooter>
+                                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                <AlertDialogAction
+                                  onClick={() => handleApprove(timecard.id)}
+                                  className="bg-green-600 hover:bg-green-700"
+                                >
+                                  Approve
+                                </AlertDialogAction>
+                              </AlertDialogFooter>
+                            </AlertDialogContent>
+                          </AlertDialog>
+
+                          {/* Reject Button with Confirmation */}
+                          <AlertDialog>
+                            <AlertDialogTrigger asChild>
+                              <Button size="sm" variant="destructive">
+                                <X className="h-4 w-4" />
+                              </Button>
+                            </AlertDialogTrigger>
+                            <AlertDialogContent>
+                              <AlertDialogHeader>
+                                <AlertDialogTitle>Reject Timecard</AlertDialogTitle>
+                                <AlertDialogDescription>
+                                  Are you sure you want to reject the timecard for {timecard.employee}?
+                                  This action will mark the timecard as rejected and the employee will need to resubmit.
+                                </AlertDialogDescription>
+                              </AlertDialogHeader>
+                              <AlertDialogFooter>
+                                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                <AlertDialogAction
+                                  onClick={() => handleReject(timecard.id)}
+                                  className="bg-red-600 hover:bg-red-700"
+                                >
+                                  Reject
+                                </AlertDialogAction>
+                              </AlertDialogFooter>
+                            </AlertDialogContent>
+                          </AlertDialog>
+
+                          {/* Flag Button with Confirmation */}
+                          <AlertDialog>
+                            <AlertDialogTrigger asChild>
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                className="border-orange-200 text-orange-800 hover:bg-orange-50"
+                              >
+                                <AlertTriangle className="h-4 w-4" />
+                              </Button>
+                            </AlertDialogTrigger>
+                            <AlertDialogContent>
+                              <AlertDialogHeader>
+                                <AlertDialogTitle>Flag Timecard</AlertDialogTitle>
+                                <AlertDialogDescription>
+                                  Are you sure you want to flag the timecard for {timecard.employee}?
+                                  This action will mark the timecard for further review and investigation.
+                                </AlertDialogDescription>
+                              </AlertDialogHeader>
+                              <AlertDialogFooter>
+                                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                <AlertDialogAction
+                                  onClick={() => handleFlag(timecard.id)}
+                                  className="border-orange-200 text-orange-800 hover:bg-orange-50"
+                                >
+                                  Flag for Review
+                                </AlertDialogAction>
+                              </AlertDialogFooter>
+                            </AlertDialogContent>
+                          </AlertDialog>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+            {/* Pagination Component */}
+            {totalItems > 0 && (
+              <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                totalItems={totalItems}
+                itemsPerPage={itemsPerPage}
+                onPageChange={handlePageChange}
+                onItemsPerPageChange={handleItemsPerPageChange}
+                itemsPerPageOptions={[2, 5, 10, 20, 50]}
+              />
+            )}
+          </div>
+
+
+        )
     )
-    :
-    (
-            <div className="space-y-4">
-        {paginatedTimecards.map((timecard) => (
-          <Card key={timecard.id} className="hover:shadow-md transition-shadow">
-            <CardContent className="pt-6">
-              <div className="flex items-start justify-between">
-                <div className="flex-1">
-                  <div className="flex items-center space-x-4 mb-2">
-                    <div>
-                      <h3 className="font-semibold text-lg">{timecard.user.name}</h3>
-                      <p className="text-sm text-gray-600">
-                        {timecard.user.id} • {timecard.user.department}
-                      </p>
-                    </div>
-                    <Badge className={getStatusColor(timecard.status)}>{timecard.user.status}</Badge>
-                  </div>
-
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
-                    <div>
-                      <p className="text-sm text-gray-600">Week Ending</p>
-                      <p className="font-medium">{timecard.weekEnding}</p>
-                    </div>
-                    <div>
-                      <p className="text-sm text-gray-600">Total Hours</p>
-                      <p className="font-medium">{timecard.totalHours}h</p>
-                    </div>
-                    <div>
-                      <p className="text-sm text-gray-600">Regular Hours</p>
-                      <p className="font-medium">{timecard.regularHours}h</p>
-                    </div>
-                    <div>
-                      <p className="text-sm text-gray-600">Overtime</p>
-                      <p className="font-medium text-orange-600">{timecard.overtime}h</p>
-                    </div>
-                  </div>
-
-                  <ComplianceIssues timecard={timecard} />
-                </div>
-
-                <div className="flex flex-col space-y-2 ml-4">
-                  <Dialog>
-                    <DialogTrigger asChild>
-                      <Button variant="outline" size="sm" onClick={() => setSelectedTimecard(timecard)}>
-                        <Eye className="mr-2 h-4 w-4" />
-                        View Details
-                      </Button>
-                    </DialogTrigger>
-                    <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
-                      <DialogHeader>
-                        <DialogTitle>Timecard Details - {timecard.employee}</DialogTitle>
-                        <DialogDescription>
-                          Week ending {timecard.weekEnding} • Submitted{" "}
-                          {new Date(timecard.submittedAt).toLocaleDateString()}
-                        </DialogDescription>
-                      </DialogHeader>
-
-                      <DailyEntries selectedTimecard={selectedTimecard} reviewNotes={reviewNotes} setReviewNotes={setReviewNotes} handleApprove={handleApprove} handleReject={handleReject} handleFlag={handleFlag} />
-                    </DialogContent>
-                  </Dialog>
-
-                  {timecard.status === "pending" && (
-                    <div className="flex space-x-2">
-                      {/* Approve Button with Confirmation */}
-                      <AlertDialog>
-                        <AlertDialogTrigger asChild>
-                          <Button
-                            size="sm"
-                            className="bg-green-600 hover:bg-green-700"
-                          >
-                            <CheckCircle className="h-4 w-4" />
-                          </Button>
-                        </AlertDialogTrigger>
-                        <AlertDialogContent>
-                          <AlertDialogHeader>
-                            <AlertDialogTitle>Approve Timecard</AlertDialogTitle>
-                            <AlertDialogDescription>
-                              Are you sure you want to approve the timecard for {timecard.employee}? 
-                              This action will mark the timecard as approved and cannot be undone.
-                            </AlertDialogDescription>
-                          </AlertDialogHeader>
-                          <AlertDialogFooter>
-                            <AlertDialogCancel>Cancel</AlertDialogCancel>
-                            <AlertDialogAction 
-                              onClick={() => handleApprove(timecard.id)}
-                              className="bg-green-600 hover:bg-green-700"
-                            >
-                              Approve
-                            </AlertDialogAction>
-                          </AlertDialogFooter>
-                        </AlertDialogContent>
-                      </AlertDialog>
-
-                      {/* Reject Button with Confirmation */}
-                      <AlertDialog>
-                        <AlertDialogTrigger asChild>
-                          <Button size="sm" variant="destructive">
-                            <X className="h-4 w-4" />
-                          </Button>
-                        </AlertDialogTrigger>
-                        <AlertDialogContent>
-                          <AlertDialogHeader>
-                            <AlertDialogTitle>Reject Timecard</AlertDialogTitle>
-                            <AlertDialogDescription>
-                              Are you sure you want to reject the timecard for {timecard.employee}? 
-                              This action will mark the timecard as rejected and the employee will need to resubmit.
-                            </AlertDialogDescription>
-                          </AlertDialogHeader>
-                          <AlertDialogFooter>
-                            <AlertDialogCancel>Cancel</AlertDialogCancel>
-                            <AlertDialogAction 
-                              onClick={() => handleReject(timecard.id)}
-                              className="bg-red-600 hover:bg-red-700"
-                            >
-                              Reject
-                            </AlertDialogAction>
-                          </AlertDialogFooter>
-                        </AlertDialogContent>
-                      </AlertDialog>
-
-                      {/* Flag Button with Confirmation */}
-                      <AlertDialog>
-                        <AlertDialogTrigger asChild>
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            className="border-orange-200 text-orange-800 hover:bg-orange-50"
-                          >
-                            <AlertTriangle className="h-4 w-4" />
-                          </Button>
-                        </AlertDialogTrigger>
-                        <AlertDialogContent>
-                          <AlertDialogHeader>
-                            <AlertDialogTitle>Flag Timecard</AlertDialogTitle>
-                            <AlertDialogDescription>
-                              Are you sure you want to flag the timecard for {timecard.employee}? 
-                              This action will mark the timecard for further review and investigation.
-                            </AlertDialogDescription>
-                          </AlertDialogHeader>
-                          <AlertDialogFooter>
-                            <AlertDialogCancel>Cancel</AlertDialogCancel>
-                            <AlertDialogAction 
-                              onClick={() => handleFlag(timecard.id)}
-                              className="border-orange-200 text-orange-800 hover:bg-orange-50"
-                            >
-                              Flag for Review
-                            </AlertDialogAction>
-                          </AlertDialogFooter>
-                        </AlertDialogContent>
-                      </AlertDialog>
-                    </div>
-                  )}
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
-         {/* Pagination Component */}
-      {totalItems > 0 && (
-        <Pagination
-          currentPage={currentPage}
-          totalPages={totalPages}
-          totalItems={totalItems}
-          itemsPerPage={itemsPerPage}
-          onPageChange={handlePageChange}
-          onItemsPerPageChange={handleItemsPerPageChange}
-          itemsPerPageOptions={[2, 5, 10, 20, 50]}
-        />
-      )}
-      </div>
-
-     
-    )
-  )
   )
 }
+
+
+export default TimecardsList;

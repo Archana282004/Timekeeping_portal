@@ -1,5 +1,7 @@
 import TimecardPage from "@/components/ui/employee/time-card"
 
-export default function Timecard() {
+const SubmitTimecard = () => {
   return <TimecardPage />
 }
+
+export default SubmitTimecard;

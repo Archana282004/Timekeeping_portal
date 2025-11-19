@@ -12,11 +12,10 @@ import {
   AlertDialogTrigger,
 } from "../../alert-dialog"
 
-export default function ExportTimeCard({ exportTimecards }: { exportTimecards: () => void }) {
+const ExportTimeCard = ({ exportTimecards }: { exportTimecards: () => void })=> {
   return (
     <div className="mb-8">
     <div className="flex items-center justify-between">
-      <div>
         <h1 className="text-3xl font-bold text-gray-900">Timecard Review</h1>
         <p className="text-gray-600">Review and approve employee timecards</p>
       </div>
@@ -43,6 +42,7 @@ export default function ExportTimeCard({ exportTimecards }: { exportTimecards: (
         </AlertDialogContent>
       </AlertDialog>
     </div>
-  </div>
   )
 }
+
+export default ExportTimeCard;

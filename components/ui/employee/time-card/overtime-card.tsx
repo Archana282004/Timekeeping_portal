@@ -1,7 +1,7 @@
 import { AlertTriangle } from "lucide-react";
 import { Card, CardHeader, CardContent, CardTitle } from "../../card";
 
-export default function OvertimeCard({ overtimeHours }: { overtimeHours: number }) {
+const OvertimeCard = ({ overtimeHours }: { overtimeHours: number }) =>{
   return (
     <Card>
     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -15,3 +15,5 @@ export default function OvertimeCard({ overtimeHours }: { overtimeHours: number 
   </Card>
   )
 }
+
+export default OvertimeCard;

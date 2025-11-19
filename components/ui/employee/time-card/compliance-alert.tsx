@@ -1,7 +1,7 @@
 import { AlertTriangle } from "lucide-react";
 import { Alert, AlertDescription } from "../../alert";
 
-export default function ComplianceAlert({ complianceIssues }: { complianceIssues: string[] }) {
+const ComplianceAlert = ({ complianceIssues }: { complianceIssues: string[] })=> {
   return (
     <>
         {complianceIssues.length > 0 && (
@@ -22,3 +22,5 @@ export default function ComplianceAlert({ complianceIssues }: { complianceIssues
     </>
   )
 }
+
+export default ComplianceAlert;

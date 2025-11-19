@@ -9,9 +9,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Users, Clock, AlertTriangle, CheckCircle, Download, Search } from "lucide-react"
 import Link from "next/link"
 import { Navigation } from "@/components/navigation"
-import { AdminMobileDashboard } from "./dashboard/dashboard-mobile"
+import  AdminMobileDashboard  from "@/components/ui/admin/dashboard-mobile/index"
+import PageHeader from "../pageheader"
 
-export default function AdminDashboard() {
+const AdminDashboard = () => {
   const [searchTerm, setSearchTerm] = useState("")
   const [departmentFilter, setDepartmentFilter] = useState("all")
 
@@ -83,10 +84,10 @@ export default function AdminDashboard() {
       <Navigation userType="admin" />
 
       <div className="container mx-auto px-4 py-8">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">Admin Dashboard</h1>
-          <p className="text-gray-600">Manage employees and review timecards</p>
-        </div>
+        <PageHeader
+          title="Admin Dashboard"
+          description="Manage employees and review timecards"
+        />
 
         {/* Stats Overview */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
@@ -291,3 +292,5 @@ export default function AdminDashboard() {
     </div>
   )
 }
+
+export default AdminDashboard;

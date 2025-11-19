@@ -1,6 +1,8 @@
 import AddNewEmployee from "@/components/ui/admin/add-new-employee"
 
-export default function AddNewEmployeePage() {
+const AddNewEmployeePage = () => {
   
   return <AddNewEmployee />
 }
+
+export default AddNewEmployeePage;

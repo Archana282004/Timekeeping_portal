@@ -1,5 +1,7 @@
 import AdminDashboard from "@/components/ui/admin/dashboard"
 
-export default function AdminDashboardPage() {
+const AdminDashboardPage = () => {
   return <AdminDashboard />
 }
+
+export default AdminDashboardPage;

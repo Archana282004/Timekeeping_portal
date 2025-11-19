@@ -1,5 +1,7 @@
 import TimecardReviewPage from "@/components/ui/admin/review-timecard"
 
-export default function TimecardReview() {
+const TimecardReview = () => {
   return <TimecardReviewPage />
 }
+
+export default TimecardReview;

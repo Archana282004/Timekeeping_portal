@@ -53,7 +53,7 @@ interface Timecard {
   dailyEntries: DailyEntry[];
 }
 
-interface DashboardStats {
+export interface DashboardStats {
   totalEmployees: number;
   pendingTimecards: number;
   complianceIssues: number;
@@ -88,12 +88,12 @@ interface AdminState {
   adminEmployeecardsData: AdminEmployeeCards[];
   departmentHoursData: DepartmentHours[];
   weeklyHoursData: WeeklyHours[];
-  statscard:boolean;
-  recenttimecards:boolean;
-  user:boolean;
-  weekhour:boolean;
-  departmenthour:boolean;
-  adminemployee:boolean;
+  statscard: boolean;
+  recenttimecards: boolean;
+  user: boolean;
+  weekhour: boolean;
+  departmenthour: boolean;
+  adminemployee: boolean;
 }
 
 const initialState: AdminState = {
@@ -103,12 +103,12 @@ const initialState: AdminState = {
   adminEmployeecardsData: [],
   departmentHoursData: [],
   weeklyHoursData: [],
-  statscard:true,
-  recenttimecards:true,
-  user:true, 
-  weekhour:true,
-  departmenthour:true,
-  adminemployee:true,
+  statscard: true,
+  recenttimecards: true,
+  user: true,
+  weekhour: true,
+  departmenthour: true,
+  adminemployee: true,
 };
 
 export const adminSlice = createSlice({
@@ -140,22 +140,22 @@ export const adminSlice = createSlice({
     WeeklyHours: (state, action: PayloadAction<WeeklyHours[]>) => {
       state.weeklyHoursData = action.payload;
     },
-    Statscardfetching:(state, action:PayloadAction<boolean>) => {
+    Statscardfetching: (state, action: PayloadAction<boolean>) => {
       state.statscard = action.payload;
     },
-    RecentCards:(state, action:PayloadAction<boolean>) => {
+    RecentCards: (state, action: PayloadAction<boolean>) => {
       state.recenttimecards = action.payload;
-    }, 
-    Dashboarduser:(state, action:PayloadAction<boolean>) => {
+    },
+    Dashboarduser: (state, action: PayloadAction<boolean>) => {
       state.user = action.payload;
     },
-    Weekhourchart:(state, action:PayloadAction<boolean>) => {
+    Weekhourchart: (state, action: PayloadAction<boolean>) => {
       state.weekhour = action.payload;
     },
-    departmenthourchart:(state, action:PayloadAction<boolean>) => {
+    departmenthourchart: (state, action: PayloadAction<boolean>) => {
       state.departmenthour = action.payload;
     },
-    AdminEmployee:(state, action:PayloadAction<boolean>) => {
+    AdminEmployee: (state, action: PayloadAction<boolean>) => {
       state.adminemployee = action.payload;
     }
   },
@@ -171,9 +171,9 @@ export const {
   DepartmentHoursData,
   WeeklyHours,
   Statscardfetching,
-  RecentCards, 
+  RecentCards,
   Dashboarduser,
-  Weekhourchart, 
+  Weekhourchart,
   departmenthourchart,
   AdminEmployee
 } = adminSlice.actions;

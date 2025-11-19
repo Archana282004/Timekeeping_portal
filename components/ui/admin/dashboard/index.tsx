@@ -1,31 +1,22 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Input } from "@/components/ui/input"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Users, Clock, AlertTriangle, CheckCircle, Download, Search, SortDesc } from "lucide-react"
-import Link from "next/link"
 import { Navigation } from "@/components/navigation"
-import { AdminMobileDashboard } from "./dashboard-mobile"
-import StatsCard from "./StatsCard"
-import EmployeeList from "./employee-list"
-import Filters from "./filters"
-import RecentTimecards from "./recent-timecards"
-import EmployeeManagement from "./employee-management"
-import QuickActions from "./quick-actions"
+import { AdminMobileDashboard } from "../dashboard-mobile"
+import StatsCard from "./stats-card"
 import { useAppDispatch, useAppSelector } from "@/store/hooks"
 import { fetchAdminDashboardStats, fetchTimeCards, fetchUsers } from "@/store/actions/admin-action"
+import PageHeader from "../../pageheader"
+import EmployeeTable from "./employee-table"
+import QuickActionsandRecentCards from "./qucik-actions-and-recent-timecards"
 
-export default function AdminDashboard() {
+const AdminDashboard = () =>{
   const [searchTerm, setSearchTerm] = useState("")
   const [departmentFilter, setDepartmentFilter] = useState("all")
   const dispatch = useAppDispatch();
- useEffect(() => {
-  dispatch(fetchAdminDashboardStats())
- },[dispatch])
+  useEffect(() => {
+    dispatch(fetchAdminDashboardStats())
+  }, [dispatch])
   // Mock data
   const stats = useAppSelector((state) => state.admin.adminDashboardStats) || {
     totalEmployees: 0,
@@ -34,11 +25,11 @@ export default function AdminDashboard() {
     approvedThisWeek: 0,
   }
 
-  const recentTimecards = useAppSelector((state)=> state.admin.timeCardList)
-  useEffect(()=>{
+  const recentTimecards = useAppSelector((state) => state.admin.timeCardList)
+  useEffect(() => {
     dispatch(fetchUsers({ page: 1, limit: 50 }));
-    dispatch(fetchTimeCards({page:1}))
-  },[])
+    dispatch(fetchTimeCards({ page: 1 }))
+  }, [])
 
   const employees = useAppSelector((state) => state.admin.userlist) || [];
   console.log("Employees", employees)
@@ -62,13 +53,13 @@ export default function AdminDashboard() {
       <Navigation userType="admin" />
 
       <div className="container mx-auto px-4 py-8">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">Admin Dashboard</h1>
-          <p className="text-gray-600">Manage employees and review timecards</p>
-        </div>
+        <PageHeader
+          title="Admin Dashboard"
+          description="Manage employees and review timecards"
+        />
 
         {/* Stats Overview */}
-       
+
         <StatsCard stats={stats} />
         {/* Mobile Admin Dashboard - Only visible on mobile */}
         <div className="md:hidden">
@@ -78,22 +69,20 @@ export default function AdminDashboard() {
         {/* Desktop Content - Hidden on mobile */}
         <div className="hidden md:block">
           {/* Quick Actions */}
-          <QuickActions exportPayroll={exportPayroll} recentTimecards={recentTimecards} />
+          <QuickActionsandRecentCards recentTimecards={recentTimecards} />
 
           {/* Employee Management */}
-          <Card>
-            <EmployeeManagement />
-            <CardContent>
-              {/* Filters */}
-              <Filters searchTerm={searchTerm} setSearchTerm={setSearchTerm} departmentFilter={departmentFilter} setDepartmentFilter={setDepartmentFilter} />
-
-              {/* Employee List */}
-              <EmployeeList filteredEmployees={filteredEmployees} />
-              
-            </CardContent>
-          </Card>
+          <EmployeeTable
+            searchTerm={searchTerm}
+            setSearchTerm={setSearchTerm}
+            departmentFilter={departmentFilter}
+            setDepartmentFilter={setDepartmentFilter}
+            filteredEmployees={filteredEmployees}
+          />
         </div>
       </div>
     </div>
   )
 }
+
+export default AdminDashboard

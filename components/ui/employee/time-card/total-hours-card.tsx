@@ -1,7 +1,7 @@
 import { Clock } from "lucide-react";
 import { Card, CardHeader, CardContent, CardTitle } from "../../card";
 
-export default function TotalHoursCard({ totalHours }: { totalHours: number }) {
+const TotalHoursCard = ({ totalHours }: { totalHours: number })=> {
   return (
     <Card>
     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -15,3 +15,5 @@ export default function TotalHoursCard({ totalHours }: { totalHours: number }) {
   </Card>
   )
 }
+
+export default TotalHoursCard;

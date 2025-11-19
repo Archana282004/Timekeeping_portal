@@ -13,14 +13,13 @@ import {
 import AddEmployeeDialog from "../add-employee-dialog";
 import EmployeeList from "./employee-list";
 import StatsOverview from "./stats-overview";
-import Filters from "./filters";
+import Filters from "./filters/filters";
 import NoEmployees from "./no-employees";
-import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { Navigation } from "@/components/navigation";
+import Header from "./header/header";
 
-export default function EmployeeManagementPage() {
+const EmployeeManagementPage = () => {
   const dispatch = useAppDispatch();
 
   const [searchTerm, setSearchTerm] = useState("");
@@ -38,9 +37,9 @@ export default function EmployeeManagementPage() {
     "Finance",
     "Operations",
   ];
-  const pagination ={
-    page:1,
-    perPage:25
+  const pagination = {
+    page: 1,
+    perPage: 25
   }
 
   useEffect(() => {
@@ -81,7 +80,8 @@ export default function EmployeeManagementPage() {
     setIsEditDialogOpen(true);
   };
 
-  const handleDeleteEmployee = async (employeeId: any) => { debugger
+  const handleDeleteEmployee = async (employeeId: any) => {
+    debugger
     await dispatch(DeleteUser(employeeId));
   };
 
@@ -95,14 +95,10 @@ export default function EmployeeManagementPage() {
       <Navigation userType="admin" />
 
       <div className="container mx-auto px-4 py-8">
-        <div className="flex justify-between items-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">
-            Employee Management
-          </h1>
-          <Button onClick={() => setIsAddDialogOpen(true)}>
-            <Plus className="mr-2 h-4 w-4" /> Add Employee
-          </Button>
-        </div>
+
+        <Header
+          setIsAddDialogOpen={setIsAddDialogOpen}
+        />
 
         <StatsOverview employees={emp} departments={departments} />
 
@@ -144,3 +140,5 @@ export default function EmployeeManagementPage() {
     </div>
   );
 }
+
+export default EmployeeManagementPage;

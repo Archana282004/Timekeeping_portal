@@ -1,5 +1,7 @@
 import EmployeeManagementPage from "@/components/ui/admin/manage-employee"
 
-export default function Employees() {
+const Employees = () =>{
   return <EmployeeManagementPage />
 }
+
+export default Employees;

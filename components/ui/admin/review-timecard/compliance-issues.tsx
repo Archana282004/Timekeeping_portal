@@ -1,7 +1,7 @@
 import { Alert, AlertDescription } from "../../alert"
 import { AlertTriangle } from "lucide-react"
 
-export default function ComplianceIssues({ timecard }: { timecard: any }) {
+const ComplianceIssues = ({ timecard }: { timecard: any }) => {
   return (
     <>
           {timecard.issues.length > 0 && (
@@ -10,7 +10,7 @@ export default function ComplianceIssues({ timecard }: { timecard: any }) {
                   <AlertDescription>
                     <div className="font-medium text-orange-800 mb-1">Compliance Issues:</div>
                     <ul className="list-disc list-inside space-y-1 text-orange-700">
-                      {timecard.issues.map((issue, index) => (
+                      {timecard.issues.map((issue:any, index:any) => (
                         <li key={index} className="text-sm">
                           {issue}
                         </li>
@@ -22,3 +22,5 @@ export default function ComplianceIssues({ timecard }: { timecard: any }) {
     </>
   )
 }
+
+export default ComplianceIssues;

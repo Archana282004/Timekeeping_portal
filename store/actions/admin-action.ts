@@ -127,12 +127,12 @@ export const weekhourdata = () => async (dispatch: AppDispatch) => {
   }
 };
 
-export const DeleteUser = (id: number) => async () => { debugger
+export const DeleteUser = (id: number) => async () => { 
   try {
     const res: any = await API.del(`/api/auth/deleteUser/${id}`);
     if (res.success){ forSuccess("User Deleted Successfully");}
     return res.data;
-  } catch (err) { debugger
+  } catch (err) { 
     console.log(err);
   }
 };

@@ -1,6 +1,8 @@
 import TimecardHistoryPage from "@/components/ui/employee/history";
 
-export default function TimecardHistory() {
+const TimecardHistory = () => {
     return <TimecardHistoryPage />
   }
+
+  export default TimecardHistory;
   

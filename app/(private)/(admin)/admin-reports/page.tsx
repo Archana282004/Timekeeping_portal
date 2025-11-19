@@ -1,5 +1,7 @@
 import Reports from "@/components/ui/admin/reports"
 
-export default function AdminReports() {
+const AdminReports = () => {
   return <Reports />
 }
+
+export default AdminReports;

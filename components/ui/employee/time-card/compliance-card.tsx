@@ -1,7 +1,7 @@
 import { AlertTriangle, CheckCircle } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "../../card";
 
-export default function ComplianceCard({ complianceIssues }: { complianceIssues: string[] }) {
+const ComplianceCard = ({ complianceIssues }: { complianceIssues: string[] }) =>{
   return (
     <Card>
     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -27,3 +27,5 @@ export default function ComplianceCard({ complianceIssues }: { complianceIssues:
   </Card>
   )
 }
+
+export default ComplianceCard;

@@ -1,5 +1,7 @@
 import DashboardComponent from "@/components/ui/employee/dashboard"
 
-export default function Dashboard() {
+const Dashboard = () => {
   return <DashboardComponent />
 }
+
+export default Dashboard;

@@ -6,12 +6,12 @@ import { Navigation } from "@/components/navigation"
 import Link from "next/link"
 import TimeEntriesCard from "./time-entries-card"
 import ComplianceCard from "./compliance-card"
-import TotalHoursCard from "./total-hours-card"
-import OvertimeCard from "./overtime-card"
 import ComplianceAlert from "./compliance-alert"
-import { Zap, FileText } from "lucide-react"
+import { Zap, FileText, Clock, AlertTriangle } from "lucide-react"
 import { useAppDispatch, useAppSelector } from "@/store/hooks"
 import { fetchMyWeekTimecards, todayStatus } from "@/store/actions/user-action"
+import PageHeader from "../../pageheader"
+import StatsCard from "../../stats-card"
 
 interface TimeEntry {
   date: string
@@ -50,21 +50,21 @@ export interface Timecard {
 }
 export interface timecard {
   timecard: Timecard;
-} 
+}
 
-export default function TimecardPage() {
+const TimecardPage = () => {
   const dispatch = useAppDispatch();
-  useEffect(()=>{
+  useEffect(() => {
     dispatch(todayStatus())
-  },[])
-  const timeEntries= useAppSelector((state) =>
+  }, [])
+  const timeEntries = useAppSelector((state) =>
     state.user.todayStatus ? [state.user.todayStatus] : []
   )
-    useEffect(() => {
-      dispatch(fetchMyWeekTimecards({ "weekEnding": "2025-10-19" }));
-    }, [dispatch])
-  
-    const weekEntries = useAppSelector(
+  useEffect(() => {
+    dispatch(fetchMyWeekTimecards({ "weekEnding": "2025-10-19" }));
+  }, [dispatch])
+
+  const weekEntries = useAppSelector(
     (state: any) => state.user.getmyweektimecards
   ) as timecard | null;
   const [breaks, setBreaks] = useState([
@@ -100,9 +100,9 @@ export default function TimecardPage() {
     return Math.max(0, diffHours - breakMinutes / 60)
   }
 
-  const getTotalHours = () =>(
+  const getTotalHours = () => (
     weekEntries?.timecard?.totalHours || 0
-    )
+  )
 
   const getOvertimeHours = () => (
     weekEntries?.timecard?.overtime || 0
@@ -162,10 +162,10 @@ export default function TimecardPage() {
       <div className="container mx-auto px-4 py-8 pb-24">
         {/* Header */}
         <div className="mb-8 flex items-center justify-between">
-          <div>
-            <h1 className="text-2xl md:text-3xl font-bold text-gray-900">Submit Timecard</h1>
-            <p className="text-gray-600">Enter your working hours for the week</p>
-          </div>
+          <PageHeader
+            title="Submit Timecard"
+            description="Enter your working hours for the week"
+          />
           <div className="flex space-x-2">
             <Link href="/employee-timecard-quickview">
               <Button variant="outline" size="sm">
@@ -184,8 +184,20 @@ export default function TimecardPage() {
 
         {/* Summary Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          <TotalHoursCard totalHours={totalHours} />
-          <OvertimeCard overtimeHours={overtimeHours} />
+          <StatsCard
+            title="Total Hours"
+            icon={Clock}
+            data={`${totalHours.toFixed(1)}h`}
+            description="This week"
+            class="text-2xl font-bold text-green-500"
+          />
+          <StatsCard
+            title="Overtime"
+            icon={AlertTriangle}
+            data={`${overtimeHours.toFixed(1)}h`}
+            description="Over 40 hours"
+            class="text-2xl font-bold text-red-500"
+          />
           <ComplianceCard complianceIssues={complianceIssues} />
         </div>
 
@@ -196,12 +208,14 @@ export default function TimecardPage() {
         <TimeEntriesCard
           timeEntries={timeEntries}
           addTimeEntry={todayStatus}
-          updateTimeEntry={() => {}}
-          removeTimeEntry={() => {}}
+          updateTimeEntry={() => { }}
+          removeTimeEntry={() => { }}
         />
 
-       
-        </div>
+
       </div>
+    </div>
   )
 }
+
+export default TimecardPage;

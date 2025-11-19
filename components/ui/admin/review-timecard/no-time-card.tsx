@@ -1,6 +1,6 @@
 import { Card, CardContent } from "../../card"
 
-export default function NoTimeCard({ filteredTimecards }: { filteredTimecards: any[] }) {
+const NoTimeCard = ({ filteredTimecards }: { filteredTimecards: any[] })=> {
   return (
     <>
        {filteredTimecards.length === 0 && (
@@ -15,3 +15,5 @@ export default function NoTimeCard({ filteredTimecards }: { filteredTimecards: a
     </>
   )
 }
+
+export default NoTimeCard;
